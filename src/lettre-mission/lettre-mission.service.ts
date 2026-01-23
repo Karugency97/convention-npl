@@ -75,6 +75,16 @@ export class LettreMissionService {
       ),
       honorairesDetails: dto.honorairesDetails,
       generatedAt: this.pdfGeneratorService.formatDate(now),
+      // User template specific fields
+      _date: now,
+      'nom complet': `${dossier.client.firstName} ${dossier.client.lastName}`,
+      email: dossier.client.email,
+      Objet: dto.missionDescription,
+      'Honoraires temps': '', // Default to empty
+      'Honoraires forfait': this.pdfGeneratorService.formatAmount(
+        dto.totalAmount,
+      ),
+      'Honoraire de résultat': false, // Default to false
     };
 
     const pdfBuffer =
@@ -164,6 +174,7 @@ export class LettreMissionService {
     const now = new Date();
     templateData.currentDate = this.pdfGeneratorService.formatDate(now);
     templateData.generatedAt = this.pdfGeneratorService.formatDate(now);
+    templateData._date = now;
 
     const pdfBuffer =
       await this.pdfGeneratorService.generateLettreMissionPdf(templateData);

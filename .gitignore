@@ -57,3 +57,4 @@ build/
 # Misc
 *.pem
 .pnp.*
+client_secret_*.json

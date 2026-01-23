@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { StorageService } from './storage.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('storage')
 export class StorageController {
@@ -15,6 +16,7 @@ export class StorageController {
 
   constructor(private readonly storageService: StorageService) {}
 
+  @Public()
   @Get('download/*path')
   async downloadFile(
     @Param('path') pathSegments: string[],

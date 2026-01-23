@@ -1,382 +1,1049 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Convention d'Honoraires - Cabinet NPL</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<p>
+<style type="text/css">@page {
+            size: A4;
+            margin: 1.5cm;
+        }
 
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 12pt;
-      line-height: 1.6;
-      color: #000;
-      padding: 40px 60px;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-      border-bottom: 2px solid #1a365d;
-      padding-bottom: 20px;
-    }
+        body {
+            font-family: "Bell MT", Georgia, serif;
+            font-size: 10pt;
+            line-height: 1.5;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
 
-    .cabinet-name {
-      font-size: 24pt;
-      font-weight: bold;
-      color: #1a365d;
-      margin-bottom: 5px;
-    }
+        .page-container {
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 1cm;
+            background: white;
+        }
 
-    .cabinet-subtitle {
-      font-size: 14pt;
-      color: #4a5568;
-      margin-bottom: 10px;
-    }
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #c9a961;
+        }
 
-    .cabinet-address {
-      font-size: 10pt;
-      color: #718096;
-    }
+        .header img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 10px;
+        }
 
-    .document-title {
-      text-align: center;
-      font-size: 18pt;
-      font-weight: bold;
-      margin: 30px 0;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
+        .header .slogan {
+            font-size: 11pt;
+            font-style: italic;
+            color: #666;
+        }
 
-    .reference {
-      text-align: right;
-      font-size: 10pt;
-      color: #718096;
-      margin-bottom: 20px;
-    }
+        /* Date et lieu */
+        .date-lieu {
+            text-align: right;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
 
-    .section {
-      margin-bottom: 25px;
-    }
+        /* Titre principal */
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            font-weight: bold;
+            font-style: italic;
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border: 2px solid #c9a961;
+        }
 
-    .section-title {
-      font-size: 12pt;
-      font-weight: bold;
-      color: #1a365d;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      border-bottom: 1px solid #e2e8f0;
-      padding-bottom: 5px;
-    }
+        /* Titres de niveau 2 */
+        h2 {
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 30px 0 20px 0;
+            padding: 10px;
+            background-color: #c9a961;
+            color: white;
+        }
 
-    .parties {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 30px;
-    }
+        /* Titres de niveau 3 */
+        h3 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin: 25px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #c9a961;
+            color: #1a1a1a;
+        }
 
-    .party {
-      width: 48%;
-    }
+        /* Titres de niveau 4 */
+        h4 {
+            font-size: 10pt;
+            font-weight: bold;
+            font-style: italic;
+            margin: 20px 0 10px 35px;
+        }
 
-    .party-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #1a365d;
-    }
+        /* Paragraphes */
+        p {
+            text-align: justify;
+            margin: 12px 0;
+            line-height: 1.6;
+        }
 
-    .party-content {
-      background: #f7fafc;
-      padding: 15px;
-      border-left: 3px solid #1a365d;
-    }
+        p strong {
+            color: #1a1a1a;
+        }
 
-    .party-content p {
-      margin-bottom: 5px;
-    }
+        /* Listes */
+        ul {
+            margin: 15px 0;
+            padding-left: 35px;
+        }
 
-    .article {
-      margin-bottom: 20px;
-    }
+        li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
 
-    .article-number {
-      font-weight: bold;
-      color: #1a365d;
-    }
+        /* Parties contractantes */
+        .parties {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fafafa;
+            border-left: 4px solid #c9a961;
+        }
 
-    .article-title {
-      font-weight: bold;
-      display: inline;
-    }
+        /* Séparateurs */
+        .separator {
+            border-bottom: 2px solid #c9a961;
+            margin: 25px 0;
+        }
 
-    .article-content {
-      margin-top: 10px;
-      text-align: justify;
-    }
+        /* Conditions particulières */
+        .conditions-particulieres {
+            background-color: #fff9f0;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #c9a961;
+            border-radius: 5px;
+        }
 
-    .amount-box {
-      background: #ebf8ff;
-      border: 2px solid #1a365d;
-      padding: 20px;
-      margin: 20px 0;
-      text-align: center;
-    }
+        .objet-dossier {
+            text-align: center;
+            font-size: 13pt;
+            font-weight: bold;
+            color: #c9a961;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
 
-    .amount-label {
-      font-size: 12pt;
-      color: #4a5568;
-      margin-bottom: 10px;
-    }
+        /* Honoraires */
+        .honoraires-box {
+            background-color: #fafafa;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #c9a961;
+        }
 
-    .amount-value {
-      font-size: 24pt;
-      font-weight: bold;
-      color: #1a365d;
-    }
+        /* Tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 9pt;
+        }
 
-    .amount-details {
-      font-size: 10pt;
-      color: #718096;
-      margin-top: 10px;
-    }
+        thead {
+            background-color: #c9a961;
+            color: white;
+        }
 
-    .signatures {
-      margin-top: 60px;
-      display: flex;
-      justify-content: space-between;
-    }
+        th {
+            border: 1px solid #666;
+            padding: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
 
-    .signature-box {
-      width: 45%;
-      text-align: center;
-    }
+        td {
+            border: 1px solid #999;
+            padding: 6px 8px;
+            vertical-align: top;
+        }
 
-    .signature-title {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #1a365d;
-    }
+        td.center {
+            text-align: center;
+        }
 
-    .signature-line {
-      border-bottom: 1px solid #000;
-      height: 80px;
-      margin-bottom: 10px;
-    }
+        td.right {
+            text-align: right;
+        }
 
-    .signature-date {
-      font-size: 10pt;
-      color: #718096;
-    }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    .footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 9pt;
-      color: #a0aec0;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 20px;
-    }
+        /* Annexes */
+        .annexe-title {
+            text-align: center;
+            background-color: #c9a961;
+            color: white;
+            font-weight: bold;
+            font-size: 12pt;
+            padding: 12px;
+            margin: 30px 0 20px 0;
+        }
 
-    .mention-legale {
-      font-size: 10pt;
-      color: #718096;
-      margin-top: 20px;
-      padding: 15px;
-      background: #f7fafc;
-      border-radius: 5px;
-    }
+        .annexe-subtitle {
+            text-align: center;
+            font-style: italic;
+            margin: 15px 0;
+            color: #666;
+        }
 
-    .list-item {
-      margin-left: 20px;
-      margin-bottom: 5px;
-    }
+        /* Signature */
+        .signature-box {
+            border: 2px solid #c9a961;
+            padding: 20px;
+            margin: 30px 0;
+            min-height: 250px;
+            background-color: #fafafa;
+        }
 
-    .highlight {
-      background: #fefcbf;
-      padding: 2px 5px;
-    }
+        .signature-box p {
+            margin: 15px 0;
+        }
 
-    @media print {
-      body {
-        padding: 20px 40px;
-      }
+        /* Mise en évidence */
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
 
-      .page-break {
-        page-break-before: always;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="cabinet-name">CABINET NPL</div>
-    <div class="cabinet-subtitle">Avocats au Barreau de Paris</div>
-    <div class="cabinet-address">
-      {{cabinetAddress}}<br>
-      T&eacute;l : {{cabinetPhone}} | Email : {{cabinetEmail}}
-    </div>
-  </div>
+        /* Saut de page */
+        .page-break {
+            page-break-after: always;
+        }
 
-  <div class="reference">
-    R&eacute;f&eacute;rence : {{dossierReference}}<br>
-    Date : {{currentDate}}
-  </div>
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 2px solid #c9a961;
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+        }
 
-  <h1 class="document-title">Convention d'Honoraires</h1>
+        /* Impresssion */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .page-container {
+                padding: 0;
+            }
 
-  <div class="section">
-    <h2 class="section-title">Les Parties</h2>
-    <div class="parties">
-      <div class="party">
-        <div class="party-title">Le Cabinet</div>
-        <div class="party-content">
-          <p><strong>CABINET NPL</strong></p>
-          <p>{{cabinetAddress}}</p>
-          <p>SIRET : {{cabinetSiret}}</p>
-          <p>Barreau de Paris</p>
-        </div>
-      </div>
-      <div class="party">
-        <div class="party-title">Le Client</div>
-        <div class="party-content">
-          <p><strong>{{clientFullName}}</strong></p>
-          <p>{{clientAddress}}</p>
-          <p>Email : {{clientEmail}}</p>
-          {{#if clientPhone}}
-          <p>T&eacute;l : {{clientPhone}}</p>
-          {{/if}}
-        </div>
-      </div>
-    </div>
-  </div>
+            .page-break {
+                page-break-after: always;
+            }
+        }
 
-  <div class="section">
-    <h2 class="section-title">Objet de la Mission</h2>
-    <div class="article">
-      <p class="article-content">
-        Le Cabinet est charg&eacute; d'assister et de repr&eacute;senter le Client dans le cadre de l'affaire suivante :
-      </p>
-      <p class="article-content" style="margin-top: 15px; padding: 15px; background: #f7fafc; border-left: 3px solid #1a365d;">
-        <strong>{{missionDescription}}</strong>
-      </p>
-    </div>
-  </div>
+        /* Encadrés spéciaux */
+        .info-box {
+            background-color: #e8f4f8;
+            border-left: 4px solid #c9a961;
+            padding: 15px;
+            margin: 15px 0;
+        }
 
-  <div class="section">
-    <h2 class="section-title">Article 1 - Honoraires</h2>
-    <div class="article">
-      <div class="amount-box">
-        <div class="amount-label">Montant total des honoraires (TTC)</div>
-        <div class="amount-value">{{totalAmountFormatted}} &euro;</div>
-        <div class="amount-details">
-          {{#if honorairesDetails}}
-          {{honorairesDetails}}
-          {{/if}}
-        </div>
-      </div>
-      <p class="article-content">
-        Les honoraires sont fix&eacute;s d'un commun accord entre les parties et couvrent l'ensemble des diligences
-        n&eacute;cessaires &agrave; la mission d&eacute;finie ci-dessus, sauf stipulation contraire express&eacute;ment pr&eacute;vue.
-      </p>
-    </div>
-  </div>
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #c9a961;
+            padding: 15px;
+            margin: 15px 0;
+        }
+</style>
+</p>
 
-  <div class="section">
-    <h2 class="section-title">Article 2 - Modalit&eacute;s de paiement</h2>
-    <div class="article">
-      <p class="article-content">
-        Le Client s'engage &agrave; r&eacute;gler les honoraires selon les modalit&eacute;s d&eacute;finies lors de la signature
-        de la pr&eacute;sente convention. Les modes de r&egrave;glement accept&eacute;s sont :
-      </p>
-      <ul style="margin-top: 10px; margin-left: 30px;">
-        <li class="list-item">Paiement en ligne (carte bancaire)</li>
-        <li class="list-item">Ch&egrave;que(s) bancaire(s)</li>
-      </ul>
-      <p class="article-content" style="margin-top: 15px;">
-        Le choix du mode de paiement sera effectu&eacute; imm&eacute;diatement apr&egrave;s la signature de la pr&eacute;sente convention.
-      </p>
-    </div>
-  </div>
+<div class="page-container"><!-- Header -->
+<div class="header"><img alt="Logo NPL" height="311" src="https://www.dropbox.com/scl/fi/1l9j5153nw34tuijghdo3/Logo_NPL.png?rlkey=zzwsfqrp6edspecc46gzugv26&amp;e=1&amp;st=4k9sf231&amp;dl=1" width="501" /></div>
+<!-- Date et lieu -->
 
-  <div class="section">
-    <h2 class="section-title">Article 3 - Obligations des parties</h2>
-    <div class="article">
-      <p class="article-content"><strong>Le Cabinet s'engage &agrave; :</strong></p>
-      <ul style="margin-top: 10px; margin-left: 30px;">
-        <li class="list-item">Accomplir sa mission avec diligence, comp&eacute;tence et dans le respect des r&egrave;gles d&eacute;ontologiques</li>
-        <li class="list-item">Informer r&eacute;guli&egrave;rement le Client de l'&eacute;volution de son dossier</li>
-        <li class="list-item">Respecter le secret professionnel</li>
-      </ul>
-      <p class="article-content" style="margin-top: 15px;"><strong>Le Client s'engage &agrave; :</strong></p>
-      <ul style="margin-top: 10px; margin-left: 30px;">
-        <li class="list-item">Communiquer au Cabinet tous les documents et informations n&eacute;cessaires</li>
-        <li class="list-item">R&eacute;pondre dans les meilleurs d&eacute;lais aux demandes du Cabinet</li>
-        <li class="list-item">R&eacute;gler les honoraires selon les modalit&eacute;s convenues</li>
-      </ul>
-    </div>
-  </div>
+<p class="date-lieu">À Pointe-à-Pitre,</p>
 
-  <div class="section">
-    <h2 class="section-title">Article 4 - Responsabilit&eacute;</h2>
-    <div class="article">
-      <p class="article-content">
-        Le Cabinet est titulaire d'une assurance de responsabilit&eacute; civile professionnelle.
-        La responsabilit&eacute; du Cabinet ne saurait &ecirc;tre engag&eacute;e en cas de fourniture d'informations
-        incompl&egrave;tes ou inexactes par le Client.
-      </p>
-    </div>
-  </div>
+<p class="date-lieu">Le : {{format_date _date format="DD/MM/YYYY"}}</p>
+<!-- Titre -->
 
-  <div class="section">
-    <h2 class="section-title">Article 5 - Fin de mission</h2>
-    <div class="article">
-      <p class="article-content">
-        La mission prendra fin &agrave; l'issue des diligences pr&eacute;vues ou par d&eacute;cision de l'une ou l'autre
-        des parties, sous r&eacute;serve du respect des r&egrave;gles d&eacute;ontologiques applicables.
-        En cas de dessaisissement, le Cabinet remettra au Client l'ensemble des pi&egrave;ces de son dossier.
-      </p>
-    </div>
-  </div>
+<h1>CONVENTION D'HONORAIRES</h1>
+<!-- Parties -->
 
-  <div class="section">
-    <h2 class="section-title">Article 6 - Contestation</h2>
-    <div class="article">
-      <p class="article-content">
-        En cas de contestation relative aux honoraires, le Client peut saisir le B&acirc;tonnier de l'Ordre
-        des avocats au Barreau de Paris conform&eacute;ment &agrave; l'article 175 du d&eacute;cret n&deg;91-1197 du 27 novembre 1991.
-      </p>
-    </div>
-  </div>
+<div class="parties">
+<p><strong>Entre :</strong></p>
 
-  <div class="mention-legale">
-    <strong>Mentions l&eacute;gales :</strong> Le Client reconna&icirc;t avoir pris connaissance des conditions de la pr&eacute;sente
-    convention et les accepter sans r&eacute;serve. Il reconna&icirc;t &eacute;galement avoir &eacute;t&eacute; inform&eacute; de son droit de r&eacute;tractation
-    dans les conditions pr&eacute;vues par la loi. Conform&eacute;ment au RGPD, les donn&eacute;es personnelles collect&eacute;es sont
-    trait&eacute;es uniquement dans le cadre de la pr&eacute;sente mission et conserv&eacute;es conform&eacute;ment aux obligations l&eacute;gales.
-  </div>
+<p>Madame/Monsieur <strong>{{[nom complet]}}&nbsp;</strong><span style="color:#ecf0f1">{{email}}</span></p>
 
-  <div class="signatures">
-    <div class="signature-box">
-      <div class="signature-title">Le Cabinet NPL</div>
-      <div class="signature-line"></div>
-      <div class="signature-date">Date : {{currentDate}}</div>
-    </div>
-    <div class="signature-box">
-      <div class="signature-title">Le Client</div>
-      <div class="signature-line"></div>
-      <div class="signature-date">Date : _______________</div>
-    </div>
-  </div>
+<p style="margin-top: 15px;"><strong>Et</strong></p>
 
-  <div class="footer">
-    <p>Cabinet NPL - Avocats au Barreau de Paris</p>
-    <p>{{cabinetAddress}}</p>
-    <p>Document g&eacute;n&eacute;r&eacute; le {{generatedAt}}</p>
-  </div>
-</body>
-</html>
+<p>Le <strong>Cabinet d'avocat NPL</strong>, représenté par <strong>Maître Nancy PIERRE-LOUIS</strong></p>
+</div>
+<!-- Préambule -->
+
+<h3>PRÉAMBULE</h3>
+
+<p><em>L'Avocat et le Client ont évoqué ensemble la nature de la mission confiée à l'Avocat par la présente Convention (ci-après dénommée "La Convention"), ainsi que les différentes modalités de rémunération envisageables en fonction de la loi et des usages.</em></p>
+
+<p><em>Dans le cadre de la Convention, les parties conviennent de définir la mission et le mode de rémunération de l'Avocat.</em></p>
+
+<p><em>Pour suite à nos entretiens, je vous confirme accepter de prendre en charge la défense de vos intérêts, mon intervention se situant dans le cadre contractuel ci-après.</em></p>
+
+<div class="page-break">&nbsp;</div>
+<!-- Aide Juridictionnelle -->
+
+<h3>Aide Juridictionnelle</h3>
+
+<p>L'AVOCAT a informé LE CLIENT du mécanisme de l'aide juridictionnelle qui permet la prise en charge des honoraires de l'avocat par l'État, totalement ou partiellement et suivant un barème préétabli, lorsqu'il accepte d'intervenir au bénéfice d'un client dont les ressources sont inférieures à un plafond fixé par l'administration.</p>
+
+<p>LE CLIENT déclare que ses ressources et/ou son patrimoine ne le rend pas éligible au mécanisme de l'aide juridictionnelle OU : qu'il entend expressément renoncer par la présente à solliciter le bénéfice de l'aide juridictionnelle.</p>
+<!-- Assurance protection juridique -->
+
+<h3>Assurance protection juridique</h3>
+
+<p>LE CLIENT déclare avoir été informé de la possibilité que son contrat d'assurance personnelle comporte une assurance de protection juridique permettant la prise en charge partielle des honoraires de L'AVOCAT suivant le barème établi par la compagnie d'assurances.</p>
+
+<p>LE CLIENT déclare faire son affaire de la mise en œuvre éventuelle de son assurance de protection juridique et du remboursement par sa compagnie d'assurances de la partie des honoraires de L'AVOCAT correspondant au barème de la compagnie.</p>
+
+<p>LE CLIENT reconnaît qu'en aucune manière le barème établi par la compagnie d'assurances ne pourra se substituer au montant des honoraires fixé par la présente convention et du fait que la mise en œuvre de cette garantie dans le cadre de ses relations avec sa compagnie d'assurances ne peut en aucune manière limiter sa liberté de choisir son avocat.</p>
+<!-- Article Préliminaire RGPD -->
+
+<h3>Article Préliminaire : Protection des données à caractère personnel</h3>
+
+<p>Dispositions relatives aux données personnelles</p>
+
+<p><strong>Nécessité de la collecte et finalités</strong></p>
+
+<p>Les données collectées dans le cadre des missions définies aux présentes font l'objet d'un traitement informatique destiné à répondre aux demandes des Clients et plus généralement, à des fins de traitement et suivi des dossiers, la facturation et recouvrement, ou encore la fixation des honoraires.</p>
+
+<p>Les données personnelles sont traitées dans le logiciel de gestion de « relations clients » du Cabinet lequel est mentionné au registre des traitements.</p>
+
+<p><strong>Responsable du traitement et destinataires des données collectées</strong></p>
+
+<p>Le responsable du traitement des données à caractère personnel est le Cabinet domicilié à l'adresse susmentionnée.</p>
+
+<p>Par respect du secret professionnel, toute information est à destination unique de l'Avocat et de son personnel habilité, collaborateurs et stagiaires, inclus.</p>
+
+<p>Les données collectées du Client ne sont pas transmises à des acteurs commerciaux ou publicitaires.</p>
+
+<p><strong>Durée de conservation des données</strong></p>
+
+<p>Les données sont conservées uniquement le temps nécessaire pour les finalités poursuivies, conformément aux prescriptions légales ou ordinales applicables à l'Avocat.</p>
+
+<p><strong>Droit des personnes</strong></p>
+
+<p>Pour des motifs légitimes, le Client peut s'opposer au traitement des données le concernant. L'attention du Client est toutefois attirée sur le fait que ne pas fournir toute information utile peut empêcher l'avocat de traiter sa demande ou en retarder le traitement.</p>
+
+<p>Conformément au Règlement général européen sur la protection des données personnelles (RGPD) et à la loi Informatique fichiers et libertés du 6 janvier 1978 modifiée, le Client dispose d'un droit d'accès, de limitation, de rectification, de suppression ou d'effacement sur les données à caractère personnel le concernant. Lorsque c'est applicable, le Client dispose aussi du droit à la portabilité de ses données. Le Client peut aussi donner ses instructions au Cabinet pour la communication ou non de ses données personnelles après son décès.</p>
+
+<p>Les droits susvisés peuvent être exercés auprès du délégué à la protection des données, par courrier électronique à l'adresse suivante : <strong>cabinet@nplavocats.com</strong></p>
+
+<p>En cas de litige, la Commission Nationale de l'Informatique et des Libertés, autorité de contrôle compétente, peut être saisie.</p>
+
+<div class="info-box">
+<p><strong>Droit de rétractation applicable aux contrats conclus à distance et hors établissement</strong></p>
+
+<p>Si la relation avec l'Avocat a eu lieu entièrement à distance, et que le Client est un consommateur, c'est-à-dire un particulier ou une personne morale qui agit à des fins qui n'entrent pas dans le cadre de son activité commerciale, industrielle, artisanale, agricole ou libérale, le Client a un droit de rétractation qu'il peut exercer sans avoir à motiver sa décision, dans un délai de quatorze jours à compter du lendemain de la convention. Ce délai est prorogé jusqu'au premier jour ouvrable suivant s'il expire un samedi, un dimanche ou un jour férié ou chômé.</p>
+
+<p>Si le Client a demandé expressément l'exécution de la convention avant la fin du délai de rétractation, et qu'il a renoncé à son droit de rétractation, il doit payer le montant correspondant au service fourni jusqu'à la communication de sa décision de se rétracter. Ce montant est proportionnel au prix total de la prestation convenue dans le contrat.</p>
+
+<p>Le Client consommateur qui entend exprimer sa volonté de se rétracter doit en informer le professionnel avant l'expiration du délai de quatorze jours ci-avant mentionné par toute autre déclaration dénuée d'ambiguïté marquant sa volonté de se rétracter.</p>
+</div>
+
+<div class="page-break">&nbsp;</div>
+<!-- CONDITIONS PARTICULIÈRES -->
+
+<h2>I - CONDITIONS PARTICULIÈRES DU DOSSIER</h2>
+
+<div class="conditions-particulieres">
+<p class="objet-dossier">Objet : {{Objet}}</p>
+<!-- Au temps passé -->{{#if (length [Honoraires temps])}}
+
+<div class="honoraires-box">
+<p>Au temps passé</p>
+
+<p><strong>Honoraires : {{[Honoraires temps]}} €</strong></p>
+
+<p>Pour la mission telle que définie à ce jour, les éléments que vous avez mis à ma disposition ne me permettent pas de fixer des honoraires fixes.</p>
+
+<p>Il sera donc mis en place un système de provision en fonction de l'avancée du dossier et du temps passé.</p>
+
+<p>Les honoraires sont fixés par référence au temps passé par l'Avocat pour le traitement du dossier et en exécution de la mission selon le taux horaire déterminé selon l'annexe jointe à la présente.</p>
+
+<p>Ces montants sont augmentés de la TVA en vigueur au moment de la facturation.</p>
+
+<p>Les taux horaires pourront être révisés à la date anniversaire de la Convention.</p>
+
+<p>Ces honoraires couvriront toutes les diligences accomplies dans le cadre des négociations et des procédures telles que : rendez-vous, étude du dossier au regard des pièces communiquées par le Client et les adversaires, des textes et de la jurisprudence applicables, conseils et assistance, rédaction et mise au point des écritures, communication des pièces, audiences de procédure et de plaidoiries. Ils ne couvriront ni les débours, ni les dépens, ni les frais.</p>
+</div>
+{{/if}}
+
+<div class="separator">&nbsp;</div>
+<!-- Au forfait --> {{#if (length [Honoraires forfait])}}
+
+<div class="honoraires-box">
+<p>Au forfait</p>
+
+<p>L'honoraire de base est fixé à la somme de <strong>{{[Honoraires forfait]}} €</strong>.</p>
+
+<p>Cette somme sera, le cas échéant, majorée de la TVA au taux en vigueur à la date de la facturation.</p>
+
+<p>Cet honoraire de base est fixé en fonction de la difficulté prévisible du dossier au vu des éléments communiqués par le client à la signature des présentes.</p>
+
+<p>Il couvre les diligences énumérées ci-après, qui correspondent aux étapes strictement nécessaires à l'aboutissement de la mission dont est saisi L'AVOCAT.</p>
+
+<p><strong>Honoraires complémentaires</strong></p>
+
+<p>Les diligences non couvertes par les honoraires de base donneront lieu à honoraires complémentaires tels que décrits dans l'annexe tarifaire.</p>
+
+<p>Cet honoraire sera, le cas échéant, majoré de la TVA au taux en vigueur à la date de la facturation.</p>
+</div>
+{{/if}}
+
+<div class="separator">&nbsp;</div>
+<!-- Honoraire de résultat --> {{#if [Honoraire de résultat]}}
+
+<div class="honoraires-box">
+<p>Honoraire de résultat</p>
+
+<p><strong>Calcul de l'honoraire de résultat</strong> - Un honoraire de résultat sera perçu par L'AVOCAT en fonction des gains obtenus ou de l'économie réalisée.</p>
+
+<p>Le ou les gains obtenus sont constitués par les sommes allouées au CLIENT.</p>
+
+<p>Ces honoraires hors taxes seront fixés comme suit :</p>
+
+<ul style="list-style-type: none; padding-left: 20px;">
+	<li>• tranche de 0 à 100 000 € : <span class="highlight">10</span> %</li>
+	<li>• tranche de 100 000 à 500 000 € : <span class="highlight">20</span> %</li>
+	<li>• au-delà : <span class="highlight">35</span> %</li>
+</ul>
+
+<p>L'économie réalisée est constituée par la différence entre le montant le plus élevé raisonnablement envisageable auquel L'AVOCAT et LE CLIENT évaluent d'un commun accord le risque encouru dans le cadre de la présente procédure.</p>
+
+<p>L'honoraire de résultat sur l'économie réalisée est fixé à <span class="highlight">15</span> % de la différence entre cette somme et celle qui sera attribuée de façon définitive. Ils seront réglés lorsque la décision sera devenue définitive ou à la date à laquelle l'économie réalisée est définitivement acquise.</p>
+
+<p>L'honoraire de résultat s'appliquera aussi bien sur les montants attribués en numéraire que sur ceux prenant la forme d'une attribution ou d'un abandon de droits.</p>
+
+<p><strong>Paiement de l'honoraire de résultat</strong> - L'honoraire de résultat sera réglé à L'AVOCAT lors de la perception effective par LE CLIENT des sommes mises à la charge de la partie adverse.</p>
+
+<p>En cas d'échelonnement du paiement des sommes allouées, l'honoraire de résultat sera calculé sur la totalité des sommes allouées et réglé dans un délai <span class="highlight">d'une semaine</span> à compter du premier versement.</p>
+
+<p>Ce paiement pourra être effectué par prélèvement des sommes déposées à ce titre sur le compte CARPA de L'AVOCAT, ce que LE CLIENT s'oblige d'ores et déjà par les présentes.</p>
+
+<p><strong>En cas de dessaisissement</strong> - Dans l'hypothèse où le dessaisissement interviendrait à une date proche de l'issue de la procédure et alors que le travail accompli aura permis l'obtention du résultat recherché, la clause relative aux honoraires de résultat demeurera applicable.</p>
+</div>
+{{else}}
+
+<div class="honoraires-box">
+<p>Honoraire de résultat</p>
+
+<p>Aucun honoraire de résultat ne sera appliqué dans le cadre de cette mission.</p>
+</div>
+{{/if}}</div>
+
+<div class="page-break">&nbsp;</div>
+<!-- CONDITIONS GÉNÉRALES -->
+
+<h2>II - CONDITIONS GÉNÉRALES DU DOSSIER</h2>
+
+<p style="text-align: center;"><em>La présente lettre de mission renvoie, pour le surplus, aux Conditions Générales d'Intervention du Cabinet suscitées, qui font partie intégrante de la présente lettre de mission, dont vous avez pris connaissance avant signature de la présente lettre de mission.</em></p>
+
+<h2>CHAPITRE I - PRÉAMBULE</h2>
+
+<h3>Article 1 : Cadre juridique des Conditions Générales d'Intervention</h3>
+
+<p>Les Conditions Générales d'Intervention (CGI) ci-après détaillées ont pour fondement les règles générales de la profession d'avocat, laquelle est une profession libérale et indépendante quel que soit son mode d'exercice et est régie par l'ensemble des prescriptions légales et réglementaires qui s'imposent à l'avocat et, notamment :</p>
+
+<ul>
+	<li>la loi n° 71-1130 du 31 décembre 1971, modifiée par la loi n° 90-1259 du 31 décembre 1990</li>
+	<li>le décret n° 91-1197 du 27 novembre 1991</li>
+	<li>les textes subséquents qui les complètent et les modifient</li>
+	<li>le Règlement Intérieur National édicté par le Conseil National des Barreaux à un caractère normatif</li>
+</ul>
+
+<h3>Article 2 : Définition générale de l'Avocat et de ses missions</h3>
+
+<p>L'avocat intervient à titre professionnel dans tous les domaines de la vie civile économique et sociale et ce, dans le respect des principes essentiels régissant la profession.</p>
+
+<p>Il participe à la mise en œuvre des règles de principes juridiques et exclusivement, à la rédaction des actes, la négociation, la transaction, la médiation, et le suivi de relations contractuelles.</p>
+
+<p>L'Avocat assiste et représente ses clients devant :</p>
+
+<ul>
+	<li>toutes juridictions</li>
+	<li>toute administration</li>
+	<li>toute personne physique ou morale chargée d'une délégation de service public</li>
+	<li>en qualité de mandataire en transactions immobilières</li>
+</ul>
+
+<p>L'Avocat assiste le Client dans le suivi des exécutions des décisions de justice.</p>
+
+<h2>CHAPITRE II - MISSION</h2>
+
+<h3>Article 3 : Engagement de la mission</h3>
+
+<p>L'Avocat n'intervient que dans les limites du mandat qui lui est confié, lequel est défini par la lettre de mission. Il s'engage à mettre en œuvre toutes les diligences pour effectuer sa mission dans l'intérêt de son mandant.</p>
+
+<p>L'avocat peut se faire assister par les collaborateurs de son choix.</p>
+
+<p>Le mandat de l'Avocat débute par le règlement des honoraires ou provisions sur honoraires sollicités par le cabinet.</p>
+
+<p>En matière juridictionnelle, le mandat est réputé acquis pour l'instance pour laquelle il a été donné, y compris tout incident en demande ou en défense.</p>
+
+<p>En revanche, le mandat n'est pas réputé acquis pour exercer des voies de recours (appel, contredit ou autre). L'avocat pourra, de sa propre initiative, décider de sauvegarder les intérêts de son client en exerçant la voie de recours lorsque ces intérêts sont en péril. Toutefois, il n'est, en cas de silence du client et notamment en cas de refus tacite ou exprès de signer la lettre de mission et de payer les honoraires afférents à l'exercice de cette voie de recours, tenu à aucune diligence.</p>
+
+<p>Le désistement d'instance nécessite un mandat écrit.</p>
+
+<p>Le désistement d'action nécessite un mandat écrit.</p>
+
+<p>La présentation d'une proposition de transaction à la partie adverse nécessite un mandat écrit.</p>
+
+<p>L'envoi d'un protocole d'accord à la partie adverse nécessite un mandat écrit.</p>
+
+<h3>Article 4 : Déroulement de la mission</h3>
+
+<p>L'Avocat est soumis au secret professionnel absolu.</p>
+
+<p>Il est amené à intervenir à tout stade du dossier, conception, écritures, plaidoiries.</p>
+
+<p>Par souci d'efficacité, il peut être amené à prendre contact directement avec le client.</p>
+
+<h3>Article 5 : Fin de la mission</h3>
+
+<p>À la fin de la mission, le client est tenu de récupérer toutes les pièces qui lui ont confiées. À défaut il ne peut faire grief d'un archivage, d'avoir à régler des frais de désarchivage et d'une destruction desdites pièces dix ans après la fin de la mission.</p>
+
+<h2>CHAPITRE III - FACTURATION DES PRESTATIONS DU CABINET</h2>
+
+<h3>Article 6</h3>
+
+<p>La contrepartie de la mission pour laquelle l'avocat est mandaté est l'honoraire.</p>
+
+<h3>Article 7</h3>
+
+<p>L'honoraire du Cabinet comprend, notamment :</p>
+
+<div class="info-box">
+<p><strong>La prestation intellectuelle :</strong></p>
+
+<ul>
+	<li>Étude du dossier</li>
+	<li>Recherches juridiques et autres</li>
+	<li>Définition de la stratégie à mettre en œuvre</li>
+	<li>Rédaction des actes nécessaire à la mise en œuvre de la stratégie</li>
+	<li>Gestion technique et administrative du dossier</li>
+	<li>Courriers explicatifs et consultations écrites</li>
+	<li>Rendez-vous physiques et entretiens</li>
+	<li>Rendez-vous téléphoniques valant consultations</li>
+</ul>
+</div>
+
+<div class="info-box">
+<p><strong>La mise en œuvre concrète :</strong></p>
+
+<ul>
+	<li>Démarches et formalités</li>
+	<li>Rédaction de diverses demandes, de mémoires et réclamations auprès des organismes concernés</li>
+	<li>Temps de déplacements</li>
+	<li>Temps d'audience</li>
+	<li>Temps de plaidoirie</li>
+	<li>Correspondances externes</li>
+	<li>Rendez-vous d'explication ou de mise au point</li>
+	<li>Entretiens téléphoniques</li>
+	<li>Rédaction des consultations, synthèses et notes internes</li>
+	<li>Correspondances avec le client quelle qu'en soit la forme y compris électronique</li>
+	<li>Classement informatique et papier</li>
+</ul>
+</div>
+
+<h3>Article 8 : Détermination de l'honoraire</h3>
+
+<p>Sauf autre convention, l'honoraire est forfaitaire ou égal au temps passé multiplié par le taux horaire.</p>
+
+<p>Les forfaits et le taux horaire sont définis par le Cabinet suivant le tableau annexé aux présentes conditions générales d'intervention (Annexe 1).</p>
+
+<p>En application du dernier alinéa de l'article 10 de la loi n°71.1130 du 31 décembre 1971 (modifiée par la loi n°91647 du 10 juillet 1991), il peut être convenu d'un honoraire complémentaire en fonction du résultat pécuniaire obtenu, ce résultat s'entendant tant des sommes effectivement allouées au client, que de celles économisées par lui.</p>
+
+<p>L'honoraire de résultat ainsi calculé sur les sommes effectivement allouées ou économisées sera applicable dès que la décision sera devenue définitive. Conformément aux dispositions légales applicables, il est précisé que toutes les sommes transmises au Cabinet en exécution de la décision rendue, seront déposées sur le Compte CARPA (Caisse des Règlements Pécuniaires des Avocats).</p>
+
+<p>En cas de décision frappée d'appel mais assortie en tout ou partie de l'exécution provisoire, le montant de l'honoraire complémentaire est applicable si la décision est exécutée et ce nonobstant la voie de recours engagée et son résultat.</p>
+
+<p>Lorsqu'une convention convenant d'un honoraire fixe et d'un honoraire de résultat est conclue et qu'elle résiliée quelqu'en soit la cause, l'honoraire est calculé comme indiqué aux alinéas 1 et 2 du présent article.</p>
+
+<h3>Article 9 : Frais de gestion administrative</h3>
+
+<p>Les frais de gestion administrative du dossier, en ce compris notamment, les courriers simples (notamment avis de renvoi, transmissions de conclusions), papeterie, téléphone, télécopie, coursier, consommables, frais postaux, temps de gestion des courriers postaux, télécopiés et électroniques envoyés et reçus, archivage et stockage, abonnement e-barreau, documentation, CDRom, frais de frappe, font l'objet d'une facturation forfaitaire.</p>
+
+<p>Ce forfait s'établit comme indiqué en annexe 2.</p>
+
+<h3>Article 10 : Autres frais</h3>
+
+<p>Les frais spécifiquement définis à l'annexe, les frais de justice ainsi que divers frais exceptionnels tels que les frais de missions, frais de consultation de banques de données, de traduction ou autres frais spécifiques sont refacturés au prix coûtant, ou le cas échéant assumés directement par le client.</p>
+
+<h3>Article 11 : Débours, dépens et émoluments</h3>
+
+<p>Les devours, frais et dépens relatifs, notamment, aux demandes d'actes aux administrations, d'actes de sociétés (pour exemple bilans - extraits Kbis - Statuts et autres Actes de sociétés), frais de publicité et de publications d'actes, droits d'enregistrement aux impôts obligatoires ou non, frais de greffe, de consignation ou d'expertise sont appelés et payables à première demande.</p>
+
+<p>L'Avocat n'est pas tenu de faire l'avance de ces débours, frais et dépens. Il ne peut lui être fait grief de ne pas l'avoir fait.</p>
+
+<p>Les dépens et émoluments sont définis à l'article 695 du code de procédure civile. Ils sont dus par le client à l'avocat, en sus des honoraires et frais, le client pouvant, le cas échéant, au vu de la décision de justice se faire rembourser par son adversaire.</p>
+
+<h3>Article 12 : Modalités de règlement des honoraires</h3>
+
+<p>Les honoraires sont payés dans les conditions prévues par les lois et règlements, notamment, espèces, chèques et virement.</p>
+
+<p>Les honoraires sont payables comptant et sans escompte. Tout retard de paiement fait courir un intérêt de retard au taux légal de 11% annuel par jour de retard.</p>
+
+<p>Les intérêts de retard sont exigibles sans qu'un rappel soit nécessaire, conformément à l'article 53-1 de la Loi n°2001-420 du 15 mai 2001.</p>
+
+<p>L'Avocat peut demander le règlement d'une provision à valoir sur les honoraires.</p>
+
+<h3>Article 13 – Décompte définitif</h3>
+
+<p>Avant tout règlement définitif, l'Avocat remet à son Client un compte détaillé.</p>
+
+<p>Ce compte doit faire ressortir distinctement les frais et débours, les émoluments tarifés le cas échéant et les honoraires.</p>
+
+<p>Il doit porter la mention des sommes précédemment reçues à titre de provisions ou autres.</p>
+
+<h3>Article 14 – Suspension de la mission</h3>
+
+<p>En cas de non-paiement des factures d'honoraires et de frais, l'Avocat se réserve le droit de suspendre l'exécution de la mission, ce dont il informera son Client en attirant son attention sur les conséquences éventuelles.</p>
+
+<h3>Article 15 - Dessaisissement</h3>
+
+<p>Dans l'hypothèse où le Client souhaiterait dessaisir l'Avocat et transférer son dossier à un autre Avocat, le Client s'engage à régler sans délai les honoraires au temps passé, ainsi que les frais, débours et dépens dus à l'Avocat pour les diligences effectuées antérieurement au dessaisissement.</p>
+
+<h2>CHAPITRE IV - OBLIGATIONS RÉCIPROQUES</h2>
+
+<h3>Article 16 : Obligations de l'Avocat</h3>
+
+<p>L'Avocat exerce sa profession dans le cadre des dispositions légales et déontologiques sous le contrôle de son Ordre.</p>
+
+<p>Sur l'activité judiciaire</p>
+
+<p>L'Avocat n'est tenu que d'une obligation de moyens. Il ne saurait donc garantir le succès du procès ou de la négociation dont il est chargé.</p>
+
+<p>Toutefois, en sa qualité de Conseil, il informera son client sur l'issue possible du litige, en l'état actuel du droit et des éléments de fait et de preuve qui lui sont soumis.</p>
+
+<p>Cette information pourra faire l'objet d'un avis écrit sur demande.</p>
+
+<p>L'Avocat tiendra régulièrement informé son client du déroulement de l'instance.</p>
+
+<p>Notamment, il portera à sa connaissance dans un délai utile :</p>
+
+<ul>
+	<li>Les dates prévues pour la clôture de la procédure d'instruction du dossier et d'audience et de plaidoirie</li>
+	<li>Les actes de procédure qui auraient été pris par la partie adverse et les actes de procédure établis dans son intérêt avant leur notification</li>
+	<li>Les pièces produites par l'adversaire (une photocopie de ces pièces sera remise au client, sur demande et à ses frais)</li>
+</ul>
+
+<p>L'Avocat étudiera avec son client, tous les moyens de droit et arguments de plaidoirie utiles à la défense de ses intérêts et, il prendra en accord avec lui les actes de procédure nécessaires. Il pourra se faire substituer à l'audience par l'un de ses confrères.</p>
+
+<p>L'Avocat, dès le prononcé de la décision, informera son client et lui fera connaître, lorsqu'il sera en possession de la copie de cette décision, son avis sur l'opportunité de l'exercice d'une voie de recours.</p>
+
+<p>Sur l'activité de Conseil</p>
+
+<p>L'Avocat n'est tenu que d'une obligation de moyens. Il ne saurait donc garantir le résultat de la négociation dont il est chargé.</p>
+
+<p>En sa qualité de Conseil, il informera son client sur l'issue possible du litige, les possibilités qui s'offrent au client en l'état actuel du droit et des éléments de fait et de preuve qui lui sont soumis.</p>
+
+<p>La rédaction des actes est soumise à une obligation de résultat, le client étant tenu de ne gêner en rien la survenance de ce résultat.</p>
+
+<h3>Article 17 : Obligations du Client</h3>
+
+<p>L'Avocat ne peut accomplir sa mission de conseil et de défense qu'en étant parfaitement informé de tous les faits ayant donné naissance au litige.</p>
+
+<p>Ainsi, le client se doit de relater à l'Avocat, l'ensemble des faits, de lui remettre tous les documents et correspondances s'y rapportant et de l'informer sans délai de la survenance de tous événements nouveaux. L'étroite collaboration qui doit s'instaurer entre l'Avocat et son client, oblige ce dernier à répondre sans délai à toute demande d'informations, d'explications complémentaires ou de communication de documents.</p>
+
+<p>Le client s'engage :</p>
+
+<ul>
+	<li>à mettre à la disposition de l'Avocat, dans les délais convenus, l'ensemble des documents et informations nécessaires à l'exécution de la mission</li>
+	<li>à réaliser les travaux lui incombant</li>
+	<li>à porter à la connaissance de l'Avocat les faits importants ou exceptionnels. Il lui signale également les engagements susceptibles d'interférer dans l'analyse du dossier</li>
+	<li>à confirmer par écrit, si l'avocat le lui demande, que les documents, renseignements et explications fournis sont complets ou à confirmer son engagement sur tel point précis</li>
+	<li>à prendre les mesures nécessaires pour conserver une copie des pièces transmises et en assurer la sauvegarde</li>
+</ul>
+
+<p>Le client s'interdit tout acte portant atteinte à l'indépendance de l'Avocat et de ses collaborateurs.</p>
+
+<h3>Article 18 : Action en responsabilité / prescription</h3>
+
+<p>Les parties conviennent expressément de réduire la prescription de l'action en responsabilité de l'avocat à un an.</p>
+
+<p>Le délai de prescription court à compter du dernier acte juridique ou judiciaire à l'exclusion, notamment, de tout courrier, entretien et e-mail.</p>
+
+<h2>CHAPITRE V - LITIGES</h2>
+
+<h3>Article 19</h3>
+
+<p>Toutes réclamations sur les prestations rendues doivent être présentées par écrit dans les quinze jours de la fourniture du service au client.</p>
+
+<p>Toutes réclamations, sur les honoraires, frais et débours doivent être présentées par écrit dans les quinze jours de la réception de la facture ou de l'état de provision.</p>
+
+<p>Le Bâtonnier de l'Ordre des Avocats du Barreau de la Guadeloupe, connaîtra, dans le cadre de ses attributions, de toute contestation relative à l'interprétation, l'exécution ou la rupture de la présente convention.</p>
+
+<p>En cas de contestation d'une convention d'honoraire, pour quelque cause que ce soit, le caractère forfaitaire prévu de l'honoraire facturé est écarté au profit du détail des diligences faites et d'une facturation au taux horaire.</p>
+
+<p>En cas de contestation d'honoraires auprès du Bâtonnier, la moitié de la facture définitive ou de la provision devra être consignée entre les mains de la CARPAG.</p>
+
+<p>Les litiges relatifs à l'honoraire sont réglés conformément à l'article 175 du Décret n°95-1110 du 27/11/1991.</p>
+
+<h3>Article 20 - Médiateur</h3>
+
+<div class="info-box">
+<p>Conformément aux dispositions des articles L. 612-1 et suivants du Code de la consommation, vous avez la possibilité en qualité de consommateur, de recourir gratuitement au Médiateur de la Consommation auprès du Conseil National des Barreaux (CNB) dont les coordonnées sont les suivantes :</p>
+
+<p><strong>CNB-Médiateur à la consommation</strong><br />
+180 Boulevard Haussmann<br />
+75008 PARIS</p>
+
+<p>Mail : <strong>mediateur@mediateur-consommation-avocat.fr</strong><br />
+Site internet : <strong>https://mediateur-consommation-avocat.fr</strong></p>
+</div>
+
+<h2>CHAPITRE VI - EFFET DES CONDITIONS GÉNÉRALES D'INTERVENTION</h2>
+
+<h3>Article 21</h3>
+
+<p>Les présentes Conditions Générales d'Intervention prennent effet à la signature de la lettre de mission.</p>
+
+<p>À défaut de signature d'une lettre de mission ou en cas de modification des Conditions Générales d'Intervention, les présentes conditions générales d'interventions sont réputées acceptées si elles n'ont pas été dénoncées par le client 15 jours après qu'il en aura pris connaissance, soit qu'elles lui auront été remises contre visa, soit qu'elles lui auront été adressées par mail ou par Lettre Recommandée avec Accusé Réception.</p>
+
+<div class="page-break">&nbsp;</div>
+<!-- ANNEXES -->
+
+<div class="annexe-title">ANNEXE I</div>
+
+<p class="annexe-subtitle">Tarifs des prestations - Les prix sont exprimés en euros HT</p>
+
+<table>
+	<thead>
+		<tr>
+			<th style="width: 50%; text-align: left;">LIBELLÉ</th>
+			<th style="width: 25%;">TAUX HORAIRE</th>
+			<th style="width: 25%;">FORFAIT</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Formalités juridiques et judiciaires</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Audience de renvoi</td>
+			<td class="right">120 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Expertise</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Audience de plaidoirie</td>
+			<td class="right">300 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Consultation écrite</td>
+			<td class="right">250 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Consultation orale (téléphone ou sur rendez-vous)</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Diligences urgentes</td>
+			<td class="right">450 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Étude des conclusions du contradicteur</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Étude de dossier</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Courrier explicatif</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Levée grosse ordonnance</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Rédaction d'annonce légale</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Rédaction assignation</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Retour d'audience</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Rédaction de conclusions</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Retour dossier et clôture</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Rédaction dire à expert</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Réception et étude pré-rapport d'expertise</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Réalisation de formalités</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Rédaction requête</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Réception rapport expertise définitif et examen</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Signification à avocat</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Réunion de travail avec client</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Lettres emails et fax</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Lettres sortantes</td>
+			<td class="center">—</td>
+			<td class="right">50 €</td>
+		</tr>
+		<tr>
+			<td>Recherches juridiques</td>
+			<td class="right">150 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Rendez-vous au cabinet</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Rendez-vous extérieurs</td>
+			<td class="right">250 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Entretiens téléphoniques</td>
+			<td class="right">200 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Rédaction d'actes juridiques</td>
+			<td class="right">250 €</td>
+			<td class="center">—</td>
+		</tr>
+		<tr>
+			<td>Rédaction d'actes judiciaires divers</td>
+			<td class="right">120 €</td>
+			<td class="center">—</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="annexe-title">ANNEXE II : FRAIS DE GESTION ADMINISTRATIFS (FGA)</div>
+
+<p class="annexe-subtitle">Barème selon la valeur en honoraires du dossier</p>
+
+<table>
+	<thead>
+		<tr>
+			<th style="width: 60%;">VALEUR EN HONORAIRES DU DOSSIER (VHD)</th>
+			<th style="width: 40%;">MONTANT</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>0 € ≤ VHD ≤ 1 200 €</td>
+			<td class="right">200 €</td>
+		</tr>
+		<tr>
+			<td>1 201 € ≤ VHD ≤ 3 500 €</td>
+			<td class="right">250 €</td>
+		</tr>
+		<tr>
+			<td>3 501 € ≤ VHD ≤ 8 000 €</td>
+			<td class="right">350 €</td>
+		</tr>
+		<tr>
+			<td>7 001 € ≤ VHD ≤ 15 000 €</td>
+			<td class="right">450 €</td>
+		</tr>
+		<tr>
+			<td>Par tranche supplémentaire de 10 000 €</td>
+			<td class="right">150 €</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="annexe-title">ANNEXE III : AUTRES FRAIS</div>
+
+<p class="annexe-subtitle">Frais divers et vacations</p>
+
+<table>
+	<thead>
+		<tr>
+			<th style="width: 50%; text-align: left;">LIBELLÉ</th>
+			<th style="width: 25%;">UNITÉ</th>
+			<th style="width: 25%;">PRIX UNITÉ</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Frais kilométriques</td>
+			<td class="center">Km</td>
+			<td class="right">0,80 €</td>
+		</tr>
+		<tr>
+			<td>Recommandé sans AR</td>
+			<td class="center">—</td>
+			<td class="right">6,00 €</td>
+		</tr>
+		<tr>
+			<td>Recommandé AR</td>
+			<td class="center">—</td>
+			<td class="right">10,00 €</td>
+		</tr>
+		<tr>
+			<td>Photocopies</td>
+			<td class="center">Page</td>
+			<td class="right">0,25 €</td>
+		</tr>
+		<tr>
+			<td>Vacation France hexagonale / Amérique du Nord</td>
+			<td class="center">—</td>
+			<td class="right">1 500,00 €</td>
+		</tr>
+		<tr>
+			<td>Vacation Caraïbes</td>
+			<td class="center">—</td>
+			<td class="right">600,00 €</td>
+		</tr>
+		<tr>
+			<td>Vacation Guyane</td>
+			<td class="center">—</td>
+			<td class="right">900,00 €</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="annexe-title">ANNEXE IV : FORFAITS JURIDICTIONNELS</div>
+
+<p class="annexe-subtitle">Interventions devant les tribunaux</p>
+
+<table>
+	<thead>
+		<tr>
+			<th style="width: 60%; text-align: left;">LIBELLÉ</th>
+			<th style="width: 40%;">FORFAIT</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Intervention devant le Tribunal d'Instance</td>
+			<td class="right">1 200 €</td>
+		</tr>
+		<tr>
+			<td>Intervention devant le Tribunal Judiciaire</td>
+			<td class="right">2 500 €</td>
+		</tr>
+		<tr>
+			<td>Intervention devant le Tribunal Mixte de Commerce</td>
+			<td class="right">2 500 €</td>
+		</tr>
+		<tr>
+			<td>Intervention devant la Cour d'Appel</td>
+			<td class="right">3 600 €</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="page-break">&nbsp;</div>
+<!-- SIGNATURE -->
+
+<div style="border-top: 3px solid #c9a961; margin: 40px 0 20px 0;">&nbsp;</div>
+
+<div class="signature-box">
+<div class="warning-box">
+<p style="text-align: center; font-weight: bold;">Cette proposition est valable dans les trois mois de son édition</p>
+</div>
+
+<p style="margin: 30px 0;"><strong>Je soussigné(e) : {{[nom complet]}}</strong></p>
+
+<p style="margin: 30px 0;">* Agrée la mission telle que décrite dans la présente lettre et les honoraires y attachés</p>
+
+<p style="margin: 40px 0 20px 0;"><strong>Date de signature :</strong> {{eDateSigned 1}}</p>
+
+<p style="margin: 40px 0;"><strong>Signature :</strong> {{eSign 1}}</p>
+</div>
+<!-- Footer -->
+
+<div class="footer">
+<p>&nbsp;</p>
+</div>
+</div>

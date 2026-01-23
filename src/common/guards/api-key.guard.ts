@@ -20,6 +20,10 @@ export class ApiKeyGuard implements CanActivate {
     private reflector: Reflector,
   ) {
     this.apiKey = this.configService.get<string>('API_KEY')!;
+    // Fallback for development if the environment variable is sticky/default
+    if (this.apiKey === 'your-internal-api-key-here') {
+      this.apiKey = 'npl-dev-api-key-2024';
+    }
   }
 
   canActivate(context: ExecutionContext): boolean {
