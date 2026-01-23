@@ -1,0 +1,44 @@
+.layout {
+  min-height: 100vh;
+}
+
+.main {
+  margin-left: 260px;
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.content {
+  padding: var(--space-8);
+  max-width: 1400px;
+}
+
+/* Decorative background pattern */
+.main::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background:
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(184, 149, 106, 0.03) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+}

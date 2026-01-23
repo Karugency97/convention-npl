@@ -1,0 +1,92 @@
+.card {
+  background: var(--cream);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Variants */
+.default {
+  border: 1px solid var(--ink-100);
+}
+
+.elevated {
+  box-shadow: var(--shadow-md);
+}
+
+.outlined {
+  border: 1px solid var(--ink-200);
+  background: transparent;
+}
+
+/* Padding */
+.padding-none {
+  padding: 0;
+}
+
+.padding-sm {
+  padding: var(--space-4);
+}
+
+.padding-md {
+  padding: var(--space-6);
+}
+
+.padding-lg {
+  padding: var(--space-8);
+}
+
+/* Hover effect */
+.hoverable {
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out-quart);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--ink-100);
+  margin-bottom: var(--space-4);
+}
+
+.headerContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--ink-500);
+  margin-top: var(--space-1);
+}
+
+.action {
+  flex-shrink: 0;
+}
+
+/* Content */
+.content {
+  /* No specific styles, just for semantic grouping */
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ink-100);
+  margin-top: var(--space-4);
+}

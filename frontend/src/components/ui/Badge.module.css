@@ -1,0 +1,50 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 500;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sm {
+  height: 20px;
+  padding: 0 var(--space-2);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+}
+
+.md {
+  height: 26px;
+  padding: 0 var(--space-3);
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+/* Variants */
+.default {
+  background: var(--ink-100);
+  color: var(--ink-600);
+}
+
+.success {
+  background: #d1fae5;
+  color: var(--emerald-700);
+}
+
+.warning {
+  background: var(--gold-300);
+  color: var(--gold-600);
+}
+
+.danger {
+  background: #fee2e2;
+  color: var(--crimson-600);
+}
+
+.info {
+  background: #dbeafe;
+  color: var(--azure-600);
+}

@@ -1,0 +1,643 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Loading & Error States */
+.loading,
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 400px;
+  color: var(--ink-500);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.error h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--ink-700);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--cream);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-md);
+  color: var(--ink-600);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background: var(--ink-50);
+  color: var(--ink-800);
+}
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.reference {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  margin: 0;
+}
+
+/* Progress Bar */
+.progressBar {
+  display: flex;
+  align-items: center;
+  background: var(--cream);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+}
+
+.progressStep {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.progressStep:last-child {
+  flex: 0;
+}
+
+.progressIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-100);
+  border-radius: 50%;
+  color: var(--ink-400);
+  transition: all var(--duration-normal) var(--ease-out-quart);
+}
+
+.progressStep.done .progressIcon {
+  background: var(--emerald-600);
+  color: white;
+}
+
+.progressStep.current .progressIcon {
+  background: var(--gold-500);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(184, 149, 106, 0.2);
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-400);
+}
+
+.progressStep.done .progressLabel,
+.progressStep.current .progressLabel {
+  color: var(--ink-700);
+}
+
+.progressLine {
+  flex: 1;
+  height: 2px;
+  background: var(--ink-100);
+  margin: 0 var(--space-4);
+}
+
+.progressLine.lineDone {
+  background: var(--emerald-600);
+}
+
+/* Content Grid */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-6);
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Section Cards */
+.sectionCard {
+  padding: var(--space-8);
+}
+
+.emptySection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  color: var(--ink-400);
+}
+
+.emptySection h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--ink-700);
+  margin: 0;
+}
+
+.emptySection p {
+  max-width: 360px;
+  color: var(--ink-500);
+}
+
+.disabledSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  color: var(--ink-400);
+  font-size: 0.9375rem;
+}
+
+/* Lettre Info */
+.lettreInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.lettreRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lettreLabel {
+  font-size: 0.875rem;
+  color: var(--ink-500);
+}
+
+.lettreValue {
+  font-weight: 500;
+  color: var(--ink-800);
+}
+
+.lettreDetails {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ink-100);
+}
+
+.lettreDetails p {
+  margin-top: var(--space-2);
+  font-size: 0.9375rem;
+  color: var(--ink-700);
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Signature States */
+.signedInfo,
+.pendingSignature,
+.signatureAction {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.signedIcon {
+  color: var(--emerald-600);
+}
+
+.signedText {
+  font-weight: 500;
+  color: var(--ink-800);
+  margin: 0 0 var(--space-2);
+}
+
+.pendingIcon {
+  color: var(--gold-500);
+}
+
+.pendingText {
+  font-weight: 500;
+  color: var(--ink-700);
+  margin: 0;
+}
+
+.pendingDate {
+  font-size: 0.8125rem;
+  color: var(--ink-500);
+}
+
+.signatureAction {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.signatureAction p {
+  margin: 0 0 var(--space-4);
+  color: var(--ink-600);
+}
+
+/* Paiement */
+.paidInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.paidIcon {
+  color: var(--emerald-600);
+}
+
+.paidAmount {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--emerald-700);
+  margin: 0;
+}
+
+.paidMethod {
+  font-size: 0.875rem;
+  color: var(--ink-500);
+}
+
+.pendingPayment,
+.choosePaiement {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.choosePaiement p {
+  margin: 0;
+  color: var(--ink-600);
+}
+
+.paiementOptions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* Cheques List */
+.chequesList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.chequeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--ink-50);
+  border-radius: var(--radius-md);
+}
+
+.chequeInfo {
+  flex: 1;
+}
+
+.chequeNumero {
+  font-weight: 500;
+  color: var(--ink-800);
+}
+
+.chequeBanque {
+  font-size: 0.8125rem;
+  color: var(--ink-500);
+  margin-left: var(--space-2);
+}
+
+.chequeMontant {
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Client Info */
+.clientInfo {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.clientAvatar {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-300);
+  color: var(--gold-600);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.clientDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.clientName {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-900);
+  margin: 0;
+}
+
+.clientRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+  color: var(--ink-600);
+}
+
+.clientRow svg {
+  flex-shrink: 0;
+  color: var(--ink-400);
+  margin-top: 2px;
+}
+
+.clientRow a:hover {
+  color: var(--gold-600);
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  position: relative;
+}
+
+.timelineItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 20px;
+  bottom: -8px;
+  width: 2px;
+  background: var(--ink-100);
+}
+
+.timelineItem.timelineDone:not(:last-child)::before {
+  background: var(--emerald-500);
+}
+
+.timelineDot {
+  width: 12px;
+  height: 12px;
+  background: var(--ink-200);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.timelineItem.timelineDone .timelineDot {
+  background: var(--emerald-500);
+}
+
+.timelineContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.timelineLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+.timelineDate {
+  font-size: 0.75rem;
+  color: var(--ink-400);
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.formLabel {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--ink-700);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--ink-800);
+  background: var(--cream);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-md);
+  resize: vertical;
+  min-height: 80px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--gold-500);
+  box-shadow: 0 0 0 3px rgba(184, 149, 106, 0.15);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ink-100);
+}
+
+/* Paiement Modal */
+.paiementChoice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.paiementOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: var(--paper);
+  border: 2px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.paiementOption:hover {
+  border-color: var(--gold-500);
+  background: var(--paper-warm);
+}
+
+.paiementOption svg {
+  color: var(--gold-600);
+}
+
+.paiementOption h4 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ink-800);
+  margin: 0;
+}
+
+.paiementOption p {
+  font-size: 0.8125rem;
+  color: var(--ink-500);
+  margin: 0;
+}
+
+.confirmPaiement {
+  text-align: center;
+}
+
+.confirmPaiement p {
+  margin: 0 0 var(--space-6);
+  font-size: 1rem;
+  color: var(--ink-700);
+}
+
+.chequesForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.chequeForm {
+  padding: var(--space-4);
+  background: var(--ink-50);
+  border-radius: var(--radius-md);
+}
+
+.chequeForm h5 {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  color: var(--ink-700);
+  margin: 0 0 var(--space-3);
+}
+
+.chequeFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .progressBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .progressStep {
+    flex-direction: row;
+  }
+
+  .progressLine {
+    display: none;
+  }
+
+  .paiementChoice {
+    grid-template-columns: 1fr;
+  }
+
+  .chequeFields {
+    grid-template-columns: 1fr;
+  }
+}
