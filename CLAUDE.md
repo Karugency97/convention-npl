@@ -1,0 +1,112 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+NPL Convention Management System - Internal system for NPL Law Firm to manage engagement letters (lettres de mission), electronic signatures, and payment processing.
+
+## Tech Stack
+
+- **Backend**: NestJS (Node.js 20+) with TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **PDF Generation**: Puppeteer with Handlebars templates
+- **Storage**: S3-compatible object storage (Scaleway/OVH)
+- **Frontend**: React 19 + Vite + TanStack Query
+- **External Integrations**: firma.dev (e-signatures), PayPlug (payments)
+
+## Common Commands
+
+### Backend (root directory)
+
+```bash
+npm install                    # Install dependencies
+npm run build                  # Build the project (nest build)
+npm run start:dev              # Development with hot reload
+npm run start:prod             # Production mode
+
+npm run lint                   # ESLint with auto-fix
+npm run format                 # Prettier formatting
+
+npm run test                   # Unit tests
+npm run test:watch             # Unit tests in watch mode
+npm run test:e2e               # E2E tests (requires test database)
+npm run test:e2e:ci            # E2E tests with migration setup
+```
+
+### Database (Prisma)
+
+```bash
+npx prisma generate            # Regenerate Prisma Client after schema changes
+npx prisma migrate dev         # Create and apply migrations in development
+npx prisma migrate deploy      # Apply migrations in production
+npx prisma studio              # Database GUI
+```
+
+### Frontend (frontend/ directory)
+
+```bash
+cd frontend
+npm run dev                    # Vite dev server
+npm run build                  # TypeScript check + Vite build
+npm run lint                   # ESLint
+```
+
+## Architecture
+
+### Module Structure
+
+The backend follows NestJS modular architecture. Each domain module contains:
+- `*.module.ts` - Module definition with imports/exports
+- `*.controller.ts` - HTTP endpoints
+- `*.service.ts` - Business logic
+- `dto/*.dto.ts` - Request/response validation with class-validator
+
+### Core Modules
+
+- **PrismaModule** - Database access, injectable `PrismaService`
+- **StorageModule** - S3 operations, file upload/download with presigned URLs
+- **ClientsModule** - Client CRUD
+- **DossiersModule** - Case management with status tracking
+- **LettreMissionModule** - PDF generation from HTML templates via Puppeteer
+- **SignatureModule** - firma.dev integration, webhook handling
+- **PaiementModule** - PayPlug online payments + check tracking
+
+### Business Workflow
+
+Dossier status progression:
+`DRAFT` → `SENT` (signature sent) → `SIGNED` → `PAYMENT_PENDING` (PayPlug) or `PAID` (checks/completed)
+
+### Authentication
+
+- Global `ApiKeyGuard` protects all endpoints except webhooks
+- Use `@Public()` decorator to bypass authentication for webhooks
+- API key passed via `X-API-Key` header
+
+### Webhooks
+
+Webhook endpoints at `/webhooks/firma` and `/webhooks/payplug`:
+- Verify signatures using HMAC-SHA256
+- Idempotent processing via `WebhookEvent` table
+- Must be marked with `@Public()` decorator
+
+### Configuration
+
+Environment validation in `src/config/env.validation.ts` using class-validator. All environment variables are validated at startup.
+
+Required variables: `DATABASE_URL`, `API_KEY`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, `FRONTEND_URL`
+
+### PDF Generation
+
+- HTML templates in `src/lettre-mission/templates/`
+- Handlebars templating with `{{{variable}}}` syntax
+- Puppeteer renders HTML to PDF with configured page settings
+
+## Testing
+
+- Unit tests: `*.spec.ts` files colocated with source
+- E2E tests: `test/*.e2e-spec.ts` with supertest
+- Test database: Uses separate PostgreSQL database via `DATABASE_URL` override
+- Mock providers available in `test/utils/mock-providers.ts`
+
+Run single test file: `npm test -- path/to/file.spec.ts`
