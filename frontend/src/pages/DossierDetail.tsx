@@ -241,9 +241,7 @@ function getWorkflowStep(status: DossierStatus): number {
   switch (status) {
     case 'DRAFT':
       return 0;
-    case 'LETTRE_GENERATED':
-      return 1;
-    case 'SENT_FOR_SIGNATURE':
+    case 'SENT':
       return 1;
     case 'SIGNED':
       return 2;

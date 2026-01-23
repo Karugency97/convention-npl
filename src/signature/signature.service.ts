@@ -13,7 +13,7 @@ import * as crypto from 'crypto';
 interface FirmaCreateSignatureResponse {
   id: string;
   status: string;
-  signature_url: string;
+  document_url?: string;
 }
 
 @Injectable()
@@ -81,6 +81,9 @@ export class SignatureService {
       },
     );
 
+    // Send the signing request to trigger email delivery
+    await this.sendSignatureRequest(firmaResponse.id);
+
     await this.prisma.$transaction([
       this.prisma.lettreMission.update({
         where: { dossierId },
@@ -101,8 +104,8 @@ export class SignatureService {
 
     return {
       signatureId: firmaResponse.id,
-      signatureUrl: firmaResponse.signature_url,
       status: 'sent',
+      message: 'Le client recevra un email avec le lien de signature',
     };
   }
 
@@ -112,22 +115,68 @@ export class SignatureService {
     signerName: string,
     metadata: Record<string, string>,
   ): Promise<FirmaCreateSignatureResponse> {
-    const formData = new FormData();
-    const uint8Array = new Uint8Array(pdfBuffer);
-    const blob = new Blob([uint8Array], { type: 'application/pdf' });
-    formData.append('document', blob, 'convention.pdf');
-    formData.append('signer_email', signerEmail);
-    formData.append('signer_name', signerName);
-    formData.append('webhook_url', `${this.appUrl}/webhooks/firma`);
-    formData.append('metadata', JSON.stringify(metadata));
+    // Convert PDF to base64
+    const documentBase64 = pdfBuffer.toString('base64');
 
-    const response = await fetch(`${this.firmaApiUrl}/v1/signatures`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.firmaApiKey}`,
+    // Parse signer name into first/last name
+    const nameParts = signerName.trim().split(' ');
+    const firstName = nameParts[0] || 'Client';
+    const lastName = nameParts.slice(1).join(' ') || '';
+
+    const requestBody = {
+      document: documentBase64,
+      name: `Convention - ${metadata.reference}`,
+      recipients: [
+        {
+          id: 'temp_1',
+          first_name: firstName,
+          last_name: lastName,
+          email: signerEmail,
+          designation: 'Signer',
+          order: 1,
+        },
+      ],
+      fields: [
+        {
+          type: 'signature',
+          position: {
+            x: 10,
+            y: 85,
+            width: 30,
+            height: 5,
+          },
+          page_number: 1,
+          required: true,
+          recipient_id: 'temp_1',
+        },
+        {
+          type: 'date',
+          position: {
+            x: 10,
+            y: 80,
+            width: 20,
+            height: 3,
+          },
+          page_number: 1,
+          required: true,
+          recipient_id: 'temp_1',
+          date_signing_default: true,
+        },
+      ],
+      expiration_hours: 168,
+    };
+
+    const response = await fetch(
+      `${this.firmaApiUrl}/functions/v1/signing-request-api/signing-requests`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.firmaApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
       },
-      body: formData,
-    });
+    );
 
     if (!response.ok) {
       const error = await response.text();
@@ -136,6 +185,26 @@ export class SignatureService {
     }
 
     return response.json() as Promise<FirmaCreateSignatureResponse>;
+  }
+
+  private async sendSignatureRequest(signingRequestId: string): Promise<void> {
+    const response = await fetch(
+      `${this.firmaApiUrl}/functions/v1/signing-request-api/signing-requests/${signingRequestId}/send`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.firmaApiKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      this.logger.error(`Firma API send error: ${error}`);
+      throw new BadRequestException('Failed to send signature request');
+    }
+
+    this.logger.log(`Signing request sent: ${signingRequestId}`);
   }
 
   async handleWebhook(

@@ -48,12 +48,7 @@ export const dossierStatusConfig: Record<
     color: 'var(--ink-500)',
     bgColor: 'var(--ink-100)',
   },
-  LETTRE_GENERATED: {
-    label: 'Lettre générée',
-    color: 'var(--gold-600)',
-    bgColor: 'var(--gold-300)',
-  },
-  SENT_FOR_SIGNATURE: {
+  SENT: {
     label: 'En attente de signature',
     color: 'var(--gold-600)',
     bgColor: 'var(--gold-300)',
@@ -72,11 +67,6 @@ export const dossierStatusConfig: Record<
     label: 'Payé',
     color: 'var(--emerald-700)',
     bgColor: '#a7f3d0',
-  },
-  REJECTED: {
-    label: 'Rejeté',
-    color: 'var(--crimson-600)',
-    bgColor: '#fee2e2',
   },
   CANCELLED: {
     label: 'Annulé',

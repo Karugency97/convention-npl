@@ -54,7 +54,7 @@ export function Dashboard() {
 
   // Calculate stats
   const pendingSignatures = dossiers.filter(
-    (d) => d.status === 'SENT_FOR_SIGNATURE'
+    (d) => d.status === 'SENT'
   ).length;
   const pendingPayments = dossiers.filter(
     (d) => d.status === 'SIGNED' || d.status === 'PAYMENT_PENDING'

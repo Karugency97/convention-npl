@@ -11,12 +11,10 @@ export interface Client {
 
 export type DossierStatus =
   | 'DRAFT'
-  | 'LETTRE_GENERATED'
-  | 'SENT_FOR_SIGNATURE'
+  | 'SENT'
   | 'SIGNED'
   | 'PAYMENT_PENDING'
   | 'PAID'
-  | 'REJECTED'
   | 'CANCELLED';
 
 export interface Dossier {

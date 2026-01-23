@@ -19,6 +19,14 @@ export interface LettreMissionTemplateData {
   totalAmountFormatted: string;
   honorairesDetails?: string;
   generatedAt: string;
+  // User template specific fields
+  _date: Date;
+  'nom complet': string;
+  email: string;
+  Objet: string;
+  'Honoraires temps': string;
+  'Honoraires forfait': string;
+  'Honoraire de résultat': boolean;
 }
 
 @Injectable()
@@ -66,6 +74,27 @@ export class PdfGeneratorService implements OnModuleDestroy {
           return options.inverse(this);
         },
       );
+
+      Handlebars.registerHelper('format_date', function (date, options) {
+        const d = date instanceof Date ? date : new Date(date);
+        return d.toLocaleDateString('fr-FR');
+      });
+
+      Handlebars.registerHelper('length', function (val) {
+        if (!val) return 0;
+        if (typeof val === 'string') return val.trim().length;
+        if (Array.isArray(val)) return val.length;
+        return 0;
+      });
+
+      // firma.dev signature placeholders
+      Handlebars.registerHelper('eDateSigned', function () {
+        return '[Date de signature]';
+      });
+
+      Handlebars.registerHelper('eSign', function () {
+        return '[Signature électronique]';
+      });
 
       this.template = Handlebars.compile(templateContent);
     }

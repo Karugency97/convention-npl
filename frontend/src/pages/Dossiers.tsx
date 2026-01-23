@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import {
@@ -14,7 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Button, Card, Badge, Modal, Input } from '../components/ui';
-import { getDossiers, getClients } from '../lib/api';
+import { getDossiers, getClients, createDossier } from '../lib/api';
 import {
   formatDate,
   formatCurrency,
@@ -26,8 +26,7 @@ import styles from './Dossiers.module.css';
 const statusFilters: { value: DossierStatus | 'ALL'; label: string }[] = [
   { value: 'ALL', label: 'Tous' },
   { value: 'DRAFT', label: 'Brouillons' },
-  { value: 'LETTRE_GENERATED', label: 'Lettre générée' },
-  { value: 'SENT_FOR_SIGNATURE', label: 'En signature' },
+  { value: 'SENT', label: 'En signature' },
   { value: 'SIGNED', label: 'Signés' },
   { value: 'PAYMENT_PENDING', label: 'Paiement en cours' },
   { value: 'PAID', label: 'Payés' },
@@ -87,7 +86,7 @@ export function Dossiers() {
   const stats = {
     total: dossiers.length,
     pending: dossiers.filter(
-      (d) => d.status === 'SENT_FOR_SIGNATURE' || d.status === 'PAYMENT_PENDING'
+      (d) => d.status === 'SENT' || d.status === 'PAYMENT_PENDING'
     ).length,
     completed: dossiers.filter((d) => d.status === 'PAID').length,
   };
@@ -290,13 +289,24 @@ function NewDossierModal({
   onClose: () => void;
   clients: Client[];
 }) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     clientId: '',
     description: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Would use mutation here in a real implementation
+  const createMutation = useMutation({
+    mutationFn: createDossier,
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ['dossiers'] });
+      onClose();
+      setFormData({ clientId: '', description: '' });
+      navigate(`/dossiers/${response.data.id}`);
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
@@ -310,9 +320,7 @@ function NewDossierModal({
       return;
     }
 
-    // Submit would happen here
-    // For now just close
-    onClose();
+    createMutation.mutate(formData);
   };
 
   return (
@@ -326,6 +334,7 @@ function NewDossierModal({
               setFormData({ ...formData, clientId: e.target.value })
             }
             className={styles.formSelect}
+            disabled={createMutation.isPending}
           >
             <option value="">Sélectionner un client...</option>
             {clients.map((client) => (
@@ -347,13 +356,16 @@ function NewDossierModal({
           }
           error={errors.description}
           placeholder="Ex: Litige commercial avec fournisseur"
+          disabled={createMutation.isPending}
         />
 
         <div className={styles.formActions}>
-          <Button variant="secondary" type="button" onClick={onClose}>
+          <Button variant="secondary" type="button" onClick={onClose} disabled={createMutation.isPending}>
             Annuler
           </Button>
-          <Button type="submit">Créer le dossier</Button>
+          <Button type="submit" isLoading={createMutation.isPending}>
+            Créer le dossier
+          </Button>
         </div>
       </form>
     </Modal>
