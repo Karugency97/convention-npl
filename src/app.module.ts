@@ -1,0 +1,32 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { validate } from './config/env.validation';
+import { PrismaModule } from './prisma/prisma.module';
+import { ClientsModule } from './clients/clients.module';
+import { DossiersModule } from './dossiers/dossiers.module';
+import { StorageModule } from './storage/storage.module';
+import { LettreMissionModule } from './lettre-mission/lettre-mission.module';
+import { SignatureModule } from './signature/signature.module';
+import { PaiementModule } from './paiement/paiement.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+      envFilePath: '.env',
+    }),
+    PrismaModule,
+    ClientsModule,
+    DossiersModule,
+    StorageModule,
+    LettreMissionModule,
+    SignatureModule,
+    PaiementModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}

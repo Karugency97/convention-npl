@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  firstName String
+  lastName  String
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dossiers Dossier[]
+}
+
+model Dossier {
+  id          String        @id @default(cuid())
+  reference   String        @unique
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id])
+  description String
+  status      DossierStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  lettreMission LettreMission?
+  paiements     Paiement[]
+
+  @@index([clientId])
+}
+
+enum DossierStatus {
+  DRAFT
+  SENT
+  SIGNED
+  PAYMENT_PENDING
+  PAID
+  CANCELLED
+}
+
+model LettreMission {
+  id        String  @id @default(cuid())
+  dossierId String  @unique
+  dossier   Dossier @relation(fields: [dossierId], references: [id])
+
+  templateData Json
+
+  pdfUrl         String?
+  pdfGeneratedAt DateTime?
+
+  firmaSignatureId   String?   @unique
+  sentForSignatureAt DateTime?
+  signedAt           DateTime?
+  signedPdfUrl       String?
+
+  totalAmount Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([dossierId])
+  @@index([firmaSignatureId])
+}
+
+model Paiement {
+  id        String  @id @default(cuid())
+  dossierId String
+  dossier   Dossier @relation(fields: [dossierId], references: [id])
+
+  mode   PaiementMode
+  status PaiementStatus @default(PENDING)
+
+  payplugPaymentId String? @unique
+  payplugUrl       String?
+
+  amount Decimal @db.Decimal(10, 2)
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  cheques Cheque[]
+
+  @@index([dossierId])
+  @@index([payplugPaymentId])
+}
+
+enum PaiementMode {
+  PAYPLUG
+  CHEQUES
+}
+
+enum PaiementStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model Cheque {
+  id         String   @id @default(cuid())
+  paiementId String
+  paiement   Paiement @relation(fields: [paiementId], references: [id])
+
+  numero                 Int
+  montant                Decimal  @db.Decimal(10, 2)
+  dateEncaissementPrevue DateTime
+
+  status       ChequeStatus @default(ATTENDU)
+  dateRecu     DateTime?
+  dateEncaisse DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([paiementId])
+}
+
+enum ChequeStatus {
+  ATTENDU
+  RECU
+  ENCAISSE
+}
+
+model WebhookEvent {
+  id        String   @id @default(cuid())
+  source    String
+  eventType String
+  payload   Json
+  processed Boolean  @default(false)
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@index([source, eventType])
+  @@index([createdAt])
+}

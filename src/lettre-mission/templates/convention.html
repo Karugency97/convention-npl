@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convention d'Honoraires - Cabinet NPL</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #000;
+      padding: 40px 60px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #1a365d;
+      padding-bottom: 20px;
+    }
+
+    .cabinet-name {
+      font-size: 24pt;
+      font-weight: bold;
+      color: #1a365d;
+      margin-bottom: 5px;
+    }
+
+    .cabinet-subtitle {
+      font-size: 14pt;
+      color: #4a5568;
+      margin-bottom: 10px;
+    }
+
+    .cabinet-address {
+      font-size: 10pt;
+      color: #718096;
+    }
+
+    .document-title {
+      text-align: center;
+      font-size: 18pt;
+      font-weight: bold;
+      margin: 30px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .reference {
+      text-align: right;
+      font-size: 10pt;
+      color: #718096;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #1a365d;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 5px;
+    }
+
+    .parties {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .party {
+      width: 48%;
+    }
+
+    .party-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #1a365d;
+    }
+
+    .party-content {
+      background: #f7fafc;
+      padding: 15px;
+      border-left: 3px solid #1a365d;
+    }
+
+    .party-content p {
+      margin-bottom: 5px;
+    }
+
+    .article {
+      margin-bottom: 20px;
+    }
+
+    .article-number {
+      font-weight: bold;
+      color: #1a365d;
+    }
+
+    .article-title {
+      font-weight: bold;
+      display: inline;
+    }
+
+    .article-content {
+      margin-top: 10px;
+      text-align: justify;
+    }
+
+    .amount-box {
+      background: #ebf8ff;
+      border: 2px solid #1a365d;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .amount-label {
+      font-size: 12pt;
+      color: #4a5568;
+      margin-bottom: 10px;
+    }
+
+    .amount-value {
+      font-size: 24pt;
+      font-weight: bold;
+      color: #1a365d;
+    }
+
+    .amount-details {
+      font-size: 10pt;
+      color: #718096;
+      margin-top: 10px;
+    }
+
+    .signatures {
+      margin-top: 60px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .signature-box {
+      width: 45%;
+      text-align: center;
+    }
+
+    .signature-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #1a365d;
+    }
+
+    .signature-line {
+      border-bottom: 1px solid #000;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .signature-date {
+      font-size: 10pt;
+      color: #718096;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 9pt;
+      color: #a0aec0;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+    }
+
+    .mention-legale {
+      font-size: 10pt;
+      color: #718096;
+      margin-top: 20px;
+      padding: 15px;
+      background: #f7fafc;
+      border-radius: 5px;
+    }
+
+    .list-item {
+      margin-left: 20px;
+      margin-bottom: 5px;
+    }
+
+    .highlight {
+      background: #fefcbf;
+      padding: 2px 5px;
+    }
+
+    @media print {
+      body {
+        padding: 20px 40px;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="cabinet-name">CABINET NPL</div>
+    <div class="cabinet-subtitle">Avocats au Barreau de Paris</div>
+    <div class="cabinet-address">
+      {{cabinetAddress}}<br>
+      T&eacute;l : {{cabinetPhone}} | Email : {{cabinetEmail}}
+    </div>
+  </div>
+
+  <div class="reference">
+    R&eacute;f&eacute;rence : {{dossierReference}}<br>
+    Date : {{currentDate}}
+  </div>
+
+  <h1 class="document-title">Convention d'Honoraires</h1>
+
+  <div class="section">
+    <h2 class="section-title">Les Parties</h2>
+    <div class="parties">
+      <div class="party">
+        <div class="party-title">Le Cabinet</div>
+        <div class="party-content">
+          <p><strong>CABINET NPL</strong></p>
+          <p>{{cabinetAddress}}</p>
+          <p>SIRET : {{cabinetSiret}}</p>
+          <p>Barreau de Paris</p>
+        </div>
+      </div>
+      <div class="party">
+        <div class="party-title">Le Client</div>
+        <div class="party-content">
+          <p><strong>{{clientFullName}}</strong></p>
+          <p>{{clientAddress}}</p>
+          <p>Email : {{clientEmail}}</p>
+          {{#if clientPhone}}
+          <p>T&eacute;l : {{clientPhone}}</p>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Objet de la Mission</h2>
+    <div class="article">
+      <p class="article-content">
+        Le Cabinet est charg&eacute; d'assister et de repr&eacute;senter le Client dans le cadre de l'affaire suivante :
+      </p>
+      <p class="article-content" style="margin-top: 15px; padding: 15px; background: #f7fafc; border-left: 3px solid #1a365d;">
+        <strong>{{missionDescription}}</strong>
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 1 - Honoraires</h2>
+    <div class="article">
+      <div class="amount-box">
+        <div class="amount-label">Montant total des honoraires (TTC)</div>
+        <div class="amount-value">{{totalAmountFormatted}} &euro;</div>
+        <div class="amount-details">
+          {{#if honorairesDetails}}
+          {{honorairesDetails}}
+          {{/if}}
+        </div>
+      </div>
+      <p class="article-content">
+        Les honoraires sont fix&eacute;s d'un commun accord entre les parties et couvrent l'ensemble des diligences
+        n&eacute;cessaires &agrave; la mission d&eacute;finie ci-dessus, sauf stipulation contraire express&eacute;ment pr&eacute;vue.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 2 - Modalit&eacute;s de paiement</h2>
+    <div class="article">
+      <p class="article-content">
+        Le Client s'engage &agrave; r&eacute;gler les honoraires selon les modalit&eacute;s d&eacute;finies lors de la signature
+        de la pr&eacute;sente convention. Les modes de r&egrave;glement accept&eacute;s sont :
+      </p>
+      <ul style="margin-top: 10px; margin-left: 30px;">
+        <li class="list-item">Paiement en ligne (carte bancaire)</li>
+        <li class="list-item">Ch&egrave;que(s) bancaire(s)</li>
+      </ul>
+      <p class="article-content" style="margin-top: 15px;">
+        Le choix du mode de paiement sera effectu&eacute; imm&eacute;diatement apr&egrave;s la signature de la pr&eacute;sente convention.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 3 - Obligations des parties</h2>
+    <div class="article">
+      <p class="article-content"><strong>Le Cabinet s'engage &agrave; :</strong></p>
+      <ul style="margin-top: 10px; margin-left: 30px;">
+        <li class="list-item">Accomplir sa mission avec diligence, comp&eacute;tence et dans le respect des r&egrave;gles d&eacute;ontologiques</li>
+        <li class="list-item">Informer r&eacute;guli&egrave;rement le Client de l'&eacute;volution de son dossier</li>
+        <li class="list-item">Respecter le secret professionnel</li>
+      </ul>
+      <p class="article-content" style="margin-top: 15px;"><strong>Le Client s'engage &agrave; :</strong></p>
+      <ul style="margin-top: 10px; margin-left: 30px;">
+        <li class="list-item">Communiquer au Cabinet tous les documents et informations n&eacute;cessaires</li>
+        <li class="list-item">R&eacute;pondre dans les meilleurs d&eacute;lais aux demandes du Cabinet</li>
+        <li class="list-item">R&eacute;gler les honoraires selon les modalit&eacute;s convenues</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 4 - Responsabilit&eacute;</h2>
+    <div class="article">
+      <p class="article-content">
+        Le Cabinet est titulaire d'une assurance de responsabilit&eacute; civile professionnelle.
+        La responsabilit&eacute; du Cabinet ne saurait &ecirc;tre engag&eacute;e en cas de fourniture d'informations
+        incompl&egrave;tes ou inexactes par le Client.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 5 - Fin de mission</h2>
+    <div class="article">
+      <p class="article-content">
+        La mission prendra fin &agrave; l'issue des diligences pr&eacute;vues ou par d&eacute;cision de l'une ou l'autre
+        des parties, sous r&eacute;serve du respect des r&egrave;gles d&eacute;ontologiques applicables.
+        En cas de dessaisissement, le Cabinet remettra au Client l'ensemble des pi&egrave;ces de son dossier.
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">Article 6 - Contestation</h2>
+    <div class="article">
+      <p class="article-content">
+        En cas de contestation relative aux honoraires, le Client peut saisir le B&acirc;tonnier de l'Ordre
+        des avocats au Barreau de Paris conform&eacute;ment &agrave; l'article 175 du d&eacute;cret n&deg;91-1197 du 27 novembre 1991.
+      </p>
+    </div>
+  </div>
+
+  <div class="mention-legale">
+    <strong>Mentions l&eacute;gales :</strong> Le Client reconna&icirc;t avoir pris connaissance des conditions de la pr&eacute;sente
+    convention et les accepter sans r&eacute;serve. Il reconna&icirc;t &eacute;galement avoir &eacute;t&eacute; inform&eacute; de son droit de r&eacute;tractation
+    dans les conditions pr&eacute;vues par la loi. Conform&eacute;ment au RGPD, les donn&eacute;es personnelles collect&eacute;es sont
+    trait&eacute;es uniquement dans le cadre de la pr&eacute;sente mission et conserv&eacute;es conform&eacute;ment aux obligations l&eacute;gales.
+  </div>
+
+  <div class="signatures">
+    <div class="signature-box">
+      <div class="signature-title">Le Cabinet NPL</div>
+      <div class="signature-line"></div>
+      <div class="signature-date">Date : {{currentDate}}</div>
+    </div>
+    <div class="signature-box">
+      <div class="signature-title">Le Client</div>
+      <div class="signature-line"></div>
+      <div class="signature-date">Date : _______________</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Cabinet NPL - Avocats au Barreau de Paris</p>
+    <p>{{cabinetAddress}}</p>
+    <p>Document g&eacute;n&eacute;r&eacute; le {{generatedAt}}</p>
+  </div>
+</body>
+</html>
