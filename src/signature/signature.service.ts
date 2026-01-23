@@ -209,9 +209,15 @@ export class SignatureService {
 
   async handleWebhook(
     payload: {
-      event: string;
-      signature_id: string;
-      signed_document_url?: string;
+      event_id: string;
+      event_type: string;
+      timestamp: string;
+      data: {
+        signing_request_id: string;
+        status?: string;
+        final_document_download_url?: string;
+        recipient?: Record<string, unknown>;
+      };
     },
     signature: string,
   ) {
@@ -222,10 +228,10 @@ export class SignatureService {
     const existingEvent = await this.prisma.webhookEvent.findFirst({
       where: {
         source: 'firma',
-        eventType: payload.event,
+        eventType: payload.event_type,
         payload: {
-          path: ['signature_id'],
-          equals: payload.signature_id,
+          path: ['event_id'],
+          equals: payload.event_id,
         },
         processed: true,
       },
@@ -233,7 +239,7 @@ export class SignatureService {
 
     if (existingEvent) {
       this.logger.log(
-        `Duplicate webhook ignored: ${payload.event} for ${payload.signature_id}`,
+        `Duplicate webhook ignored: ${payload.event_type} for ${payload.data.signing_request_id}`,
       );
       return { status: 'already_processed' };
     }
@@ -241,24 +247,31 @@ export class SignatureService {
     const webhookEvent = await this.prisma.webhookEvent.create({
       data: {
         source: 'firma',
-        eventType: payload.event,
+        eventType: payload.event_type,
         payload: payload as object,
       },
     });
 
     try {
-      switch (payload.event) {
-        case 'signature.completed':
-          await this.handleSignatureCompleted(payload);
+      switch (payload.event_type) {
+        case 'signing_request.completed':
+          await this.handleSignatureCompleted({
+            signing_request_id: payload.data.signing_request_id,
+            final_document_download_url: payload.data.final_document_download_url,
+          });
           break;
-        case 'signature.rejected':
-          await this.handleSignatureRejected(payload);
+        case 'signing_request.cancelled':
+          await this.handleSignatureRejected({
+            signing_request_id: payload.data.signing_request_id,
+          });
           break;
-        case 'signature.expired':
-          await this.handleSignatureExpired(payload);
+        case 'signing_request.expired':
+          await this.handleSignatureExpired({
+            signing_request_id: payload.data.signing_request_id,
+          });
           break;
         default:
-          this.logger.warn(`Unknown firma event: ${payload.event}`);
+          this.logger.log(`Firma event received: ${payload.event_type}`);
       }
 
       await this.prisma.webhookEvent.update({
@@ -279,25 +292,25 @@ export class SignatureService {
   }
 
   private async handleSignatureCompleted(payload: {
-    signature_id: string;
-    signed_document_url?: string;
+    signing_request_id: string;
+    final_document_download_url?: string;
   }) {
     const lettreMission = await this.prisma.lettreMission.findUnique({
-      where: { firmaSignatureId: payload.signature_id },
+      where: { firmaSignatureId: payload.signing_request_id },
       include: { dossier: true },
     });
 
     if (!lettreMission) {
       throw new NotFoundException(
-        `Lettre mission not found for signature: ${payload.signature_id}`,
+        `Lettre mission not found for signature: ${payload.signing_request_id}`,
       );
     }
 
     let signedPdfKey: string | null = null;
 
-    if (payload.signed_document_url) {
+    if (payload.final_document_download_url) {
       const signedPdfBuffer = await this.downloadSignedDocument(
-        payload.signed_document_url,
+        payload.final_document_download_url,
       );
       signedPdfKey = this.storageService.generateLettreMissionKey(
         lettreMission.dossierId,
@@ -331,14 +344,14 @@ export class SignatureService {
     );
   }
 
-  private async handleSignatureRejected(payload: { signature_id: string }) {
+  private async handleSignatureRejected(payload: { signing_request_id: string }) {
     const lettreMission = await this.prisma.lettreMission.findUnique({
-      where: { firmaSignatureId: payload.signature_id },
+      where: { firmaSignatureId: payload.signing_request_id },
     });
 
     if (!lettreMission) {
       throw new NotFoundException(
-        `Lettre mission not found for signature: ${payload.signature_id}`,
+        `Lettre mission not found for signature: ${payload.signing_request_id}`,
       );
     }
 
@@ -354,14 +367,14 @@ export class SignatureService {
     );
   }
 
-  private async handleSignatureExpired(payload: { signature_id: string }) {
+  private async handleSignatureExpired(payload: { signing_request_id: string }) {
     const lettreMission = await this.prisma.lettreMission.findUnique({
-      where: { firmaSignatureId: payload.signature_id },
+      where: { firmaSignatureId: payload.signing_request_id },
     });
 
     if (!lettreMission) {
       throw new NotFoundException(
-        `Lettre mission not found for signature: ${payload.signature_id}`,
+        `Lettre mission not found for signature: ${payload.signing_request_id}`,
       );
     }
 

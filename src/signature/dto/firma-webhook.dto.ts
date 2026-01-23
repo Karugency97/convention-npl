@@ -1,21 +1,42 @@
-import { IsString, IsObject, IsOptional } from 'class-validator';
+import { IsString, IsObject, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
-export class FirmaWebhookDto {
+export class FirmaWebhookDataDto {
   @IsString()
-  event: string;
-
-  @IsString()
-  signature_id: string;
+  signing_request_id: string;
 
   @IsOptional()
   @IsString()
-  signed_document_url?: string;
+  status?: string;
+
+  @IsOptional()
+  @IsString()
+  final_document_download_url?: string;
 
   @IsOptional()
   @IsObject()
-  metadata?: Record<string, unknown>;
+  recipient?: Record<string, unknown>;
+}
+
+export class FirmaWebhookDto {
+  @IsString()
+  event_id: string;
+
+  @IsString()
+  event_type: string;
+
+  @IsString()
+  timestamp: string;
 
   @IsOptional()
   @IsString()
-  timestamp?: string;
+  company_id?: string;
+
+  @IsOptional()
+  @IsString()
+  workspace_id?: string;
+
+  @ValidateNested()
+  @Type(() => FirmaWebhookDataDto)
+  data: FirmaWebhookDataDto;
 }
