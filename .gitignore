@@ -39,9 +39,8 @@ lerna-debug.log*
 .env.local
 .env.*.local
 
-# Prisma
-prisma/migrations/*
-!prisma/migrations/.gitkeep
+# Prisma - keep migrations tracked
+# prisma/migrations/* - Removed to track migrations in git
 
 # PDF storage (if storing locally)
 /storage
