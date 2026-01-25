@@ -119,3 +119,40 @@ Required: `DATABASE_URL`, `API_KEY`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, 
 - E2E tests: `test/*.e2e-spec.ts` with supertest
 - Test database: Separate PostgreSQL via `DATABASE_URL` override
 - Mock providers: `test/utils/mock-providers.ts`
+
+## Production Deployment (Dokploy)
+
+### URLs
+- **Production**: https://convention.nplavocat.com/
+- **Alternative**: https://convention-npl-31-97-156-140.traefik.me/
+
+### Infrastructure
+- **Platform**: Dokploy on Hostinger VPS
+- **Docker Image**: `node:20-bullseye-slim` (required for Prisma OpenSSL 1.1.x)
+- **Database**: PostgreSQL (convention-npl-postgres-hsrobt)
+- **API Key**: Configured via `API_KEY` env var, passed in `X-API-Key` header
+
+### Deployment Files
+- `Dockerfile` - Multi-stage build (NestJS backend + React frontend)
+- `docker-entrypoint.sh` - Runs Prisma migrations before starting app
+- `.dockerignore` - Optimized Docker context
+
+### Key Configuration
+- Frontend served via `ServeStaticModule` from `/dist/public`
+- Prisma migrations in `prisma/migrations/` - auto-applied on container start
+- CORS configured for `FRONTEND_URL`
+
+### Environment Variables (Production)
+```
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgresql://...
+API_KEY=<secure-key>
+APP_URL=https://convention.nplavocat.com
+FRONTEND_URL=https://convention.nplavocat.com
+```
+
+### Secrets to Configure
+- `S3_ACCESS_KEY_ID` / `S3_SECRET_ACCESS_KEY` - Object storage
+- `FIRMA_WEBHOOK_SECRET` - Signature webhook verification
+- `PAYPLUG_API_KEY` / `PAYPLUG_WEBHOOK_SECRET` - Payment processing
