@@ -1,26 +1,26 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Install dependencies for Puppeteer
-RUN apk add --no-cache \
+# Install dependencies for Puppeteer and build tools
+RUN apt-get update && apt-get install -y \
     chromium \
-    nss \
-    freetype \
-    harfbuzz \
+    fonts-freefont-ttf \
     ca-certificates \
-    ttf-freefont
+    openssl \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 # Tell Puppeteer to use installed Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy package files
 COPY package*.json ./
 COPY frontend/package*.json ./frontend/
 
 # Install backend dependencies
-RUN npm ci --only=production=false
+RUN npm ci
 
 # Install frontend dependencies
 WORKDIR /app/frontend
@@ -41,21 +41,21 @@ WORKDIR /app/frontend
 RUN npm run build
 
 # Production stage
-FROM node:20-alpine
+FROM node:20-slim
 
 WORKDIR /app
 
-# Install Chromium for Puppeteer in production
-RUN apk add --no-cache \
+# Install Chromium for Puppeteer and OpenSSL for Prisma in production
+RUN apt-get update && apt-get install -y \
     chromium \
-    nss \
-    freetype \
-    harfbuzz \
+    fonts-freefont-ttf \
     ca-certificates \
-    ttf-freefont
+    openssl \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
     NODE_ENV=production
 
 # Copy built assets
@@ -67,5 +67,4 @@ COPY --from=builder /app/frontend/dist ./dist/public
 
 EXPOSE 3000
 
-# Run migrations and start the app
 CMD ["node", "dist/main.js"]
