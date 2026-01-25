@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { validate } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { ClientsModule } from './clients/clients.module';
@@ -18,6 +19,10 @@ import { PaiementModule } from './paiement/paiement.module';
       validate,
       envFilePath: '.env',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'public'),
+      exclude: ['/api/(.*)', '/health', '/clients/(.*)', '/dossiers/(.*)', '/storage/(.*)', '/webhooks/(.*)', '/paiements/(.*)', '/cheques/(.*)'],
+    }),
     PrismaModule,
     ClientsModule,
     DossiersModule,
@@ -27,6 +32,6 @@ import { PaiementModule } from './paiement/paiement.module';
     PaiementModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule {}
