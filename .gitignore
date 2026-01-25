@@ -58,3 +58,6 @@ build/
 *.pem
 .pnp.*
 client_secret_*.json
+
+# MCP config (contains API keys)
+.mcp.json

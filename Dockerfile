@@ -1,4 +1,4 @@
-FROM node:20-slim AS builder
+FROM node:20-bullseye-slim AS builder
 
 WORKDIR /app
 
@@ -41,7 +41,7 @@ WORKDIR /app/frontend
 RUN npm run build
 
 # Production stage
-FROM node:20-slim
+FROM node:20-bullseye-slim
 
 WORKDIR /app
 
@@ -65,6 +65,10 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/frontend/dist ./dist/public
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
+
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
