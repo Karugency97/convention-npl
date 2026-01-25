@@ -67,4 +67,10 @@ COPY --from=builder /app/frontend/dist ./dist/public
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+# Create startup script that runs migrations then starts the app
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'npx prisma migrate deploy' >> /app/start.sh && \
+    echo 'node dist/main.js' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
