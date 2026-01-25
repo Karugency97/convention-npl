@@ -20,26 +20,25 @@ NPL Convention Management System - Internal system for NPL Law Firm to manage en
 ### Backend (root directory)
 
 ```bash
-npm install                    # Install dependencies
-npm run build                  # Build the project (nest build)
 npm run start:dev              # Development with hot reload
-npm run start:prod             # Production mode
+npm run build && npm run start:prod  # Production mode
 
 npm run lint                   # ESLint with auto-fix
 npm run format                 # Prettier formatting
 
 npm run test                   # Unit tests
 npm run test:watch             # Unit tests in watch mode
+npm run test:cov               # Coverage report
 npm run test:e2e               # E2E tests (requires test database)
-npm run test:e2e:ci            # E2E tests with migration setup
 ```
+
+Run single test: `npm test -- path/to/file.spec.ts`
 
 ### Database (Prisma)
 
 ```bash
 npx prisma generate            # Regenerate Prisma Client after schema changes
 npx prisma migrate dev         # Create and apply migrations in development
-npx prisma migrate deploy      # Apply migrations in production
 npx prisma studio              # Database GUI
 ```
 
@@ -49,7 +48,7 @@ npx prisma studio              # Database GUI
 cd frontend
 npm run dev                    # Vite dev server
 npm run build                  # TypeScript check + Vite build
-npm run lint                   # ESLint
+npm run preview                # Preview production build locally
 ```
 
 ## Architecture
@@ -80,33 +79,43 @@ Dossier status progression:
 ### Authentication
 
 - Global `ApiKeyGuard` protects all endpoints except webhooks
-- Use `@Public()` decorator to bypass authentication for webhooks
+- Use `@Public()` decorator (from `src/common/decorators/public.decorator.ts`) to bypass authentication
 - API key passed via `X-API-Key` header
 
 ### Webhooks
 
 Webhook endpoints at `/webhooks/firma` and `/webhooks/payplug`:
-- Verify signatures using HMAC-SHA256
-- Idempotent processing via `WebhookEvent` table
 - Must be marked with `@Public()` decorator
+- Verify signatures using HMAC-SHA256 with timing-safe comparison
+- Idempotent processing via `WebhookEvent` table (checks `event_id` before processing)
+
+firma.dev event types: `signing_request.completed`, `signing_request.cancelled`, `signing_request.expired`
+
+### Database Transactions
+
+Use `prisma.$transaction([...])` for atomic multi-table updates. Example pattern from signature service:
+```typescript
+await this.prisma.$transaction([
+  this.prisma.lettreMission.update({ where: {...}, data: {...} }),
+  this.prisma.dossier.update({ where: {...}, data: {...} }),
+]);
+```
 
 ### Configuration
 
-Environment validation in `src/config/env.validation.ts` using class-validator. All environment variables are validated at startup.
+Environment validation in `src/config/env.validation.ts` using class-validator. All variables validated at startup.
 
-Required variables: `DATABASE_URL`, `API_KEY`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, `FRONTEND_URL`
+Required: `DATABASE_URL`, `API_KEY`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, `FRONTEND_URL`
 
 ### PDF Generation
 
 - HTML templates in `src/lettre-mission/templates/`
-- Handlebars templating with `{{{variable}}}` syntax
-- Puppeteer renders HTML to PDF with configured page settings
+- Handlebars templating with `{{{variable}}}` syntax (triple braces for unescaped HTML)
+- Puppeteer renders HTML to PDF
 
 ## Testing
 
 - Unit tests: `*.spec.ts` files colocated with source
 - E2E tests: `test/*.e2e-spec.ts` with supertest
-- Test database: Uses separate PostgreSQL database via `DATABASE_URL` override
-- Mock providers available in `test/utils/mock-providers.ts`
-
-Run single test file: `npm test -- path/to/file.spec.ts`
+- Test database: Separate PostgreSQL via `DATABASE_URL` override
+- Mock providers: `test/utils/mock-providers.ts`
