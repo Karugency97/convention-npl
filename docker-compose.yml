@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: convention-npl-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://npl:${DB_PASSWORD}@db:5432/convention_npl
+      - API_KEY=${API_KEY}
+      - S3_REGION=${S3_REGION}
+      - S3_ENDPOINT=${S3_ENDPOINT}
+      - S3_BUCKET=${S3_BUCKET}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - FIRMA_API_KEY=${FIRMA_API_KEY}
+      - FIRMA_API_URL=${FIRMA_API_URL}
+      - FIRMA_WEBHOOK_SECRET=${FIRMA_WEBHOOK_SECRET}
+      - PAYPLUG_API_KEY=${PAYPLUG_API_KEY}
+      - PAYPLUG_API_URL=${PAYPLUG_API_URL}
+      - PAYPLUG_WEBHOOK_SECRET=${PAYPLUG_WEBHOOK_SECRET}
+      - APP_URL=${APP_URL}
+      - FRONTEND_URL=${FRONTEND_URL}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - convention-network
+
+  db:
+    image: postgres:16-alpine
+    container_name: convention-npl-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=npl
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=convention_npl
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U npl -d convention_npl"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - convention-network
+
+volumes:
+  postgres_data:
+
+networks:
+  convention-network:
+    driver: bridge
