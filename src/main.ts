@@ -2,7 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
-import { ApiKeyGuard } from './common/guards/api-key.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
@@ -23,7 +23,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalGuards(new ApiKeyGuard(configService, reflector));
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 

@@ -1,3 +1,18 @@
+export type UserRole = 'ADMIN' | 'AVOCAT' | 'SECRETAIRE';
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  user: User;
+}
+
 export interface Client {
   id: string;
   email: string;
@@ -74,6 +89,24 @@ export interface Cheque {
   dateEncaissement: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface ApiError {

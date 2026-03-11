@@ -8,10 +8,12 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('clients')
 export class ClientsController {
@@ -24,8 +26,11 @@ export class ClientsController {
   }
 
   @Get()
-  findAll() {
-    return this.clientsService.findAll();
+  findAll(@Query('all') all?: string, @Query() paginationDto?: PaginationDto) {
+    if (all === 'true') {
+      return this.clientsService.findAll();
+    }
+    return this.clientsService.findAllPaginated(paginationDto ?? new PaginationDto());
   }
 
   @Get(':id')

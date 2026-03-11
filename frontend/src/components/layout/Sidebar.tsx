@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -8,17 +8,34 @@ import {
   FileText,
   Settings,
   Scale,
+  LogOut,
+  User,
 } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from './Sidebar.module.css';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Tableau de bord' },
   { to: '/clients', icon: Users, label: 'Clients' },
   { to: '/dossiers', icon: FolderOpen, label: 'Dossiers' },
-  { to: '/cheques', icon: CreditCard, label: 'Chèques' },
+  { to: '/cheques', icon: CreditCard, label: 'Cheques' },
 ];
 
+const roleLabels: Record<string, string> = {
+  ADMIN: 'Administrateur',
+  AVOCAT: 'Avocat',
+  SECRETAIRE: 'Secretaire',
+};
+
 export function Sidebar() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
@@ -62,10 +79,37 @@ export function Sidebar() {
 
       <div className={styles.footer}>
         <div className={styles.divider} />
+
+        {user && (
+          <div className={styles.userInfo}>
+            <div className={styles.userAvatar}>
+              <User size={16} strokeWidth={1.5} />
+            </div>
+            <div className={styles.userDetails}>
+              <span className={styles.userName}>
+                {user.firstName} {user.lastName}
+              </span>
+              <span className={styles.userRole}>
+                {roleLabels[user.role] || user.role}
+              </span>
+            </div>
+          </div>
+        )}
+
         <NavLink to="/settings" className={styles.settingsLink}>
           <Settings size={18} strokeWidth={1.5} />
-          <span>Paramètres</span>
+          <span>Parametres</span>
         </NavLink>
+
+        <button
+          onClick={handleLogout}
+          className={styles.logoutButton}
+          type="button"
+        >
+          <LogOut size={18} strokeWidth={1.5} />
+          <span>Deconnexion</span>
+        </button>
+
         <div className={styles.version}>
           <FileText size={14} />
           <span>v1.0.0</span>

@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Plus,
-  Search,
   User,
   Mail,
   Phone,
@@ -14,38 +13,40 @@ import {
   FolderOpen,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button, Card, Input, Modal } from '../components/ui';
-import { getClients, createClient, updateClient, deleteClient, getDossiers } from '../lib/api';
+import { Button, Card, Input, Modal, Pagination, SearchBar } from '../components/ui';
+import { getClients, getAllClients, createClient, updateClient, deleteClient } from '../lib/api';
 import { formatDate, formatPhone } from '../lib/utils';
 import type { Client } from '../types';
 import styles from './Clients.module.css';
 
 export function Clients() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
 
-  const { data: clients = [], isLoading } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => getClients().then((res) => res.data),
+  const { data: paginatedData, isLoading } = useQuery({
+    queryKey: ['clients', { page, search: searchQuery }],
+    queryFn: () =>
+      getClients({
+        page,
+        limit: 20,
+        search: searchQuery || undefined,
+      }).then((res) => res.data),
   });
 
-  const { data: dossiers = [] } = useQuery({
-    queryKey: ['dossiers'],
-    queryFn: () => getDossiers().then((res) => res.data),
+  const clients = paginatedData?.data ?? [];
+  const meta = paginatedData?.meta;
+
+  // Fetch all dossiers count via a lightweight query
+  const { data: allClients = [] } = useQuery({
+    queryKey: ['clients', 'all'],
+    queryFn: () => getAllClients().then((res) => res.data),
   });
 
-  const filteredClients = clients.filter((client) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      client.firstName.toLowerCase().includes(query) ||
-      client.lastName.toLowerCase().includes(query) ||
-      client.email.toLowerCase().includes(query)
-    );
-  });
-
-  const getClientDossierCount = (clientId: string) => {
-    return dossiers.filter((d) => d.clientId === clientId).length;
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setPage(1);
   };
 
   const openEditModal = (client: Client) => {
@@ -73,7 +74,7 @@ export function Clients() {
         <div>
           <h1 className={styles.title}>Clients</h1>
           <p className={styles.subtitle}>
-            {clients.length} client{clients.length !== 1 ? 's' : ''} enregistré{clients.length !== 1 ? 's' : ''}
+            {meta?.total ?? allClients.length} client{(meta?.total ?? allClients.length) !== 1 ? 's' : ''} enregistre{(meta?.total ?? allClients.length) !== 1 ? 's' : ''}
           </p>
         </div>
         <Button leftIcon={<Plus size={18} />} onClick={openCreateModal}>
@@ -83,22 +84,17 @@ export function Clients() {
 
       {/* Search */}
       <div className={styles.toolbar}>
-        <div className={styles.searchWrapper}>
-          <Search size={18} className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Rechercher un client..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Rechercher un client..."
+        />
       </div>
 
       {/* Client List */}
       <div className={styles.clientGrid}>
         <AnimatePresence mode="popLayout">
-          {filteredClients.map((client, index) => (
+          {clients.map((client, index) => (
             <motion.div
               key={client.id}
               layout
@@ -109,7 +105,6 @@ export function Clients() {
             >
               <ClientCard
                 client={client}
-                dossierCount={getClientDossierCount(client.id)}
                 onEdit={() => openEditModal(client)}
               />
             </motion.div>
@@ -117,10 +112,10 @@ export function Clients() {
         </AnimatePresence>
       </div>
 
-      {filteredClients.length === 0 && !isLoading && (
+      {clients.length === 0 && !isLoading && (
         <div className={styles.emptyState}>
           <User size={48} strokeWidth={1} />
-          <h3>Aucun client trouvé</h3>
+          <h3>Aucun client trouve</h3>
           <p>
             {searchQuery
               ? 'Essayez avec d\'autres termes de recherche'
@@ -132,6 +127,17 @@ export function Clients() {
             </Button>
           )}
         </div>
+      )}
+
+      {/* Pagination */}
+      {meta && (
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          limit={meta.limit}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Modal */}
@@ -146,11 +152,9 @@ export function Clients() {
 
 function ClientCard({
   client,
-  dossierCount,
   onEdit,
 }: {
   client: Client;
-  dossierCount: number;
   onEdit: () => void;
 }) {
   const queryClient = useQueryClient();
@@ -233,9 +237,7 @@ function ClientCard({
           className={styles.dossierBadge}
         >
           <FolderOpen size={14} />
-          <span>
-            {dossierCount} dossier{dossierCount !== 1 ? 's' : ''}
-          </span>
+          <span>Voir dossiers</span>
         </Link>
         <Link to={`/dossiers/new?clientId=${client.id}`}>
           <Button variant="ghost" size="sm">
@@ -316,10 +318,10 @@ function ClientModal({
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = 'Prénom requis';
+    if (!formData.firstName.trim()) newErrors.firstName = 'Prenom requis';
     if (!formData.lastName.trim()) newErrors.lastName = 'Nom requis';
     if (!formData.email.trim()) newErrors.email = 'Email requis';
-    if (!formData.phone.trim()) newErrors.phone = 'Téléphone requis';
+    if (!formData.phone.trim()) newErrors.phone = 'Telephone requis';
     if (!formData.address.trim()) newErrors.address = 'Adresse requise';
 
     if (Object.keys(newErrors).length > 0) {
@@ -344,7 +346,7 @@ function ClientModal({
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formRow}>
           <Input
-            label="Prénom"
+            label="Prenom"
             value={formData.firstName}
             onChange={(e) =>
               setFormData({ ...formData, firstName: e.target.value })
@@ -371,7 +373,7 @@ function ClientModal({
           placeholder="jean.dupont@example.com"
         />
         <Input
-          label="Téléphone"
+          label="Telephone"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           error={errors.phone}
@@ -399,7 +401,7 @@ function ClientModal({
             type="submit"
             isLoading={createMutation.isPending || updateMutation.isPending}
           >
-            {client ? 'Enregistrer' : 'Créer le client'}
+            {client ? 'Enregistrer' : 'Creer le client'}
           </Button>
         </div>
       </form>

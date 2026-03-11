@@ -12,6 +12,7 @@ import { ChequesService } from './cheques.service';
 import { ChoosePaiementDto } from './dto/create-paiement.dto';
 import { UpdateChequeStatusDto } from './dto/update-cheque.dto';
 import { ChequeStatus } from '@prisma/client';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller()
 export class PaiementController {
@@ -43,8 +44,13 @@ export class PaiementController {
     @Query('paiementId') paiementId?: string,
     @Query('status') status?: ChequeStatus,
     @Query('dossierId') dossierId?: string,
+    @Query() paginationDto?: PaginationDto,
   ) {
-    return this.chequesService.findAll({ paiementId, status, dossierId });
+    return this.chequesService.findAllPaginated(paginationDto ?? new PaginationDto(), {
+      paiementId,
+      status,
+      dossierId,
+    });
   }
 
   @Get('cheques/:id')

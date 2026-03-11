@@ -11,6 +11,7 @@ import { StorageModule } from './storage/storage.module';
 import { LettreMissionModule } from './lettre-mission/lettre-mission.module';
 import { SignatureModule } from './signature/signature.module';
 import { PaiementModule } from './paiement/paiement.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,9 +22,10 @@ import { PaiementModule } from './paiement/paiement.module';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'public'),
-      exclude: ['/api/(.*)', '/health', '/clients/(.*)', '/dossiers/(.*)', '/storage/(.*)', '/webhooks/(.*)', '/paiements/(.*)', '/cheques/(.*)'],
+      exclude: ['/api/(.*)', '/health', '/auth/(.*)', '/clients/(.*)', '/dossiers/(.*)', '/storage/(.*)', '/webhooks/(.*)', '/paiements/(.*)', '/cheques/(.*)'],
     }),
     PrismaModule,
+    AuthModule,
     ClientsModule,
     DossiersModule,
     StorageModule,

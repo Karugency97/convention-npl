@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import {
   CreditCard,
-  Search,
   Check,
   X,
   Clock,
   Building2,
   ArrowRight,
-  FileText,
 } from 'lucide-react';
-import { Button, Card, Badge, Modal } from '../components/ui';
-import { getCheques, updateChequeStatus, getDossiers } from '../lib/api';
+import { Button, Card, Badge, Modal, Pagination, SearchBar } from '../components/ui';
+import { getCheques, updateChequeStatus } from '../lib/api';
 import { formatCurrency, formatDate, chequeStatusConfig } from '../lib/utils';
-import type { Cheque, ChequeStatus, Dossier } from '../types';
+import type { Cheque, ChequeStatus } from '../types';
 import styles from './Cheques.module.css';
 
 type FilterStatus = ChequeStatus | 'ALL';
@@ -23,52 +20,59 @@ type FilterStatus = ChequeStatus | 'ALL';
 export function Cheques() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('ALL');
+  const [page, setPage] = useState(1);
   const [selectedCheque, setSelectedCheque] = useState<Cheque | null>(null);
 
-  const { data: cheques = [] } = useQuery({
-    queryKey: ['cheques'],
-    queryFn: () => getCheques().then((res) => res.data),
+  const { data: paginatedData } = useQuery({
+    queryKey: ['cheques', { page, search: searchQuery, status: statusFilter }],
+    queryFn: () =>
+      getCheques({
+        page,
+        limit: 20,
+        search: searchQuery || undefined,
+        status: statusFilter !== 'ALL' ? statusFilter : undefined,
+      }).then((res) => res.data),
   });
 
-  const { data: dossiers = [] } = useQuery({
-    queryKey: ['dossiers'],
-    queryFn: () => getDossiers().then((res) => res.data),
+  const cheques = paginatedData?.data ?? [];
+  const meta = paginatedData?.meta;
+
+  // Fetch all cheques (no pagination) for stats
+  const { data: allChequesData } = useQuery({
+    queryKey: ['cheques', 'stats'],
+    queryFn: () =>
+      getCheques({ limit: 100, page: 1 }).then((res) => res.data),
   });
 
-  // Get dossier for a cheque (would need to be fetched properly in real app)
-  const getDossierForCheque = (cheque: Cheque): Dossier | undefined => {
-    return dossiers.find((d) =>
-      d.paiements?.some((p) => p.cheques?.some((c) => c.id === cheque.id))
-    );
+  const allCheques = allChequesData?.data ?? [];
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setPage(1);
   };
 
-  // Filter cheques
-  const filteredCheques = cheques.filter((cheque) => {
-    const matchesSearch =
-      cheque.numero.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cheque.banque.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus =
-      statusFilter === 'ALL' || cheque.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const handleStatusChange = (newStatus: FilterStatus) => {
+    setStatusFilter(newStatus);
+    setPage(1);
+  };
 
   // Stats
   const stats = {
-    attendu: cheques.filter((c) => c.status === 'ATTENDU').length,
-    recu: cheques.filter((c) => c.status === 'RECU').length,
-    encaisse: cheques.filter((c) => c.status === 'ENCAISSE').length,
-    rejete: cheques.filter((c) => c.status === 'REJETE').length,
-    totalPending: cheques
+    attendu: allCheques.filter((c) => c.status === 'ATTENDU').length,
+    recu: allCheques.filter((c) => c.status === 'RECU').length,
+    encaisse: allCheques.filter((c) => c.status === 'ENCAISSE').length,
+    rejete: allCheques.filter((c) => (c.status as string) === 'REJETE').length,
+    totalPending: allCheques
       .filter((c) => c.status === 'ATTENDU' || c.status === 'RECU')
       .reduce((sum, c) => sum + parseFloat(c.montant), 0),
   };
 
-  const statusFilters: { value: FilterStatus; label: string; count?: number }[] = [
-    { value: 'ALL', label: 'Tous', count: cheques.length },
+  const statusFiltersList: { value: FilterStatus; label: string; count?: number }[] = [
+    { value: 'ALL', label: 'Tous', count: allChequesData?.meta?.total ?? allCheques.length },
     { value: 'ATTENDU', label: 'Attendus', count: stats.attendu },
-    { value: 'RECU', label: 'Reçus', count: stats.recu },
-    { value: 'ENCAISSE', label: 'Encaissés', count: stats.encaisse },
-    { value: 'REJETE', label: 'Rejetés', count: stats.rejete },
+    { value: 'RECU', label: 'Recus', count: stats.recu },
+    { value: 'ENCAISSE', label: 'Encaisses', count: stats.encaisse },
+    { value: 'REJETE', label: 'Rejetes', count: stats.rejete },
   ];
 
   return (
@@ -79,10 +83,10 @@ export function Cheques() {
     >
       <header className={styles.header}>
         <div>
-          <h1 className={styles.title}>Gestion des chèques</h1>
+          <h1 className={styles.title}>Gestion des cheques</h1>
           <p className={styles.subtitle}>
-            {stats.attendu + stats.recu} chèque(s) en attente ·{' '}
-            {formatCurrency(stats.totalPending)} à encaisser
+            {stats.attendu + stats.recu} cheque(s) en attente .{' '}
+            {formatCurrency(stats.totalPending)} a encaisser
           </p>
         </div>
       </header>
@@ -98,21 +102,21 @@ export function Cheques() {
         />
         <StatCard
           icon={<Check size={20} />}
-          label="Reçus"
+          label="Recus"
           value={stats.recu}
           color="var(--azure-600)"
           bgColor="#dbeafe"
         />
         <StatCard
           icon={<Building2 size={20} />}
-          label="Encaissés"
+          label="Encaisses"
           value={stats.encaisse}
           color="var(--emerald-600)"
           bgColor="#d1fae5"
         />
         <StatCard
           icon={<X size={20} />}
-          label="Rejetés"
+          label="Rejetes"
           value={stats.rejete}
           color="var(--crimson-600)"
           bgColor="#fee2e2"
@@ -121,25 +125,20 @@ export function Cheques() {
 
       {/* Toolbar */}
       <div className={styles.toolbar}>
-        <div className={styles.searchWrapper}>
-          <Search size={18} className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Rechercher par numéro ou banque..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Rechercher par numero, client ou dossier..."
+        />
 
         <div className={styles.statusFilters}>
-          {statusFilters.map((filter) => (
+          {statusFiltersList.map((filter) => (
             <button
               key={filter.value}
               className={`${styles.filterButton} ${
                 statusFilter === filter.value ? styles.filterActive : ''
               }`}
-              onClick={() => setStatusFilter(filter.value)}
+              onClick={() => handleStatusChange(filter.value)}
             >
               {filter.label}
               {filter.count !== undefined && (
@@ -153,50 +152,56 @@ export function Cheques() {
       {/* Cheques List */}
       <Card padding="none">
         <div className={styles.tableHeader}>
-          <span>Numéro</span>
+          <span>Numero</span>
           <span>Banque</span>
           <span>Montant</span>
-          <span>Date d'émission</span>
+          <span>Date d'emission</span>
           <span>Statut</span>
           <span>Actions</span>
         </div>
 
         <div className={styles.tableBody}>
           <AnimatePresence mode="popLayout">
-            {filteredCheques.length === 0 ? (
+            {cheques.length === 0 ? (
               <div className={styles.emptyState}>
                 <CreditCard size={40} strokeWidth={1} />
-                <p>Aucun chèque trouvé</p>
+                <p>Aucun cheque trouve</p>
               </div>
             ) : (
-              filteredCheques.map((cheque, index) => {
-                const dossier = getDossierForCheque(cheque);
-                return (
-                  <motion.div
-                    key={cheque.id}
-                    className={styles.tableRow}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ delay: index * 0.02 }}
-                  >
-                    <ChequeRow
-                      cheque={cheque}
-                      dossier={dossier}
-                      onSelect={() => setSelectedCheque(cheque)}
-                    />
-                  </motion.div>
-                );
-              })
+              cheques.map((cheque, index) => (
+                <motion.div
+                  key={cheque.id}
+                  className={styles.tableRow}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ delay: index * 0.02 }}
+                >
+                  <ChequeRow
+                    cheque={cheque}
+                    onSelect={() => setSelectedCheque(cheque)}
+                  />
+                </motion.div>
+              ))
             )}
           </AnimatePresence>
         </div>
       </Card>
 
+      {/* Pagination */}
+      {meta && (
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          limit={meta.limit}
+          onPageChange={setPage}
+        />
+      )}
+
       {/* Cheque Detail Modal */}
       <ChequeDetailModal
         cheque={selectedCheque}
-        dossier={selectedCheque ? getDossierForCheque(selectedCheque) : undefined}
         onClose={() => setSelectedCheque(null)}
       />
     </motion.div>
@@ -234,7 +239,6 @@ function ChequeRow({
   onSelect,
 }: {
   cheque: Cheque;
-  dossier?: Dossier;
   onSelect: () => void;
 }) {
   const queryClient = useQueryClient();
@@ -256,7 +260,7 @@ function ChequeRow({
   } | null => {
     switch (cheque.status) {
       case 'ATTENDU':
-        return { label: 'Marquer reçu', status: 'RECU', variant: 'secondary' };
+        return { label: 'Marquer recu', status: 'RECU', variant: 'secondary' };
       case 'RECU':
         return { label: 'Encaisser', status: 'ENCAISSE', variant: 'primary' };
       default:
@@ -315,11 +319,9 @@ function ChequeRow({
 
 function ChequeDetailModal({
   cheque,
-  dossier,
   onClose,
 }: {
   cheque: Cheque | null;
-  dossier?: Dossier;
   onClose: () => void;
 }) {
   if (!cheque) return null;
@@ -330,7 +332,7 @@ function ChequeDetailModal({
     <Modal
       isOpen={!!cheque}
       onClose={onClose}
-      title={`Chèque n°${cheque.numero}`}
+      title={`Cheque n${cheque.numero}`}
       size="md"
     >
       <div className={styles.chequeDetail}>
@@ -352,14 +354,14 @@ function ChequeDetailModal({
             <span className={styles.detailValue}>{cheque.banque}</span>
           </div>
           <div className={styles.detailItem}>
-            <span className={styles.detailLabel}>Date d'émission</span>
+            <span className={styles.detailLabel}>Date d'emission</span>
             <span className={styles.detailValue}>
               {formatDate(cheque.dateEmission)}
             </span>
           </div>
           {cheque.dateReception && (
             <div className={styles.detailItem}>
-              <span className={styles.detailLabel}>Date de réception</span>
+              <span className={styles.detailLabel}>Date de reception</span>
               <span className={styles.detailValue}>
                 {formatDate(cheque.dateReception)}
               </span>
@@ -374,22 +376,6 @@ function ChequeDetailModal({
             </div>
           )}
         </div>
-
-        {dossier && (
-          <div className={styles.detailDossier}>
-            <span className={styles.detailLabel}>Dossier associé</span>
-            <Link
-              to={`/dossiers/${dossier.id}`}
-              className={styles.dossierLink}
-              onClick={onClose}
-            >
-              <FileText size={16} />
-              <span>{dossier.reference}</span>
-              <span className={styles.dossierDesc}>{dossier.description}</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-        )}
       </div>
     </Modal>
   );

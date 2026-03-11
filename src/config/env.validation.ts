@@ -24,6 +24,9 @@ class EnvironmentVariables {
   API_KEY: string;
 
   @IsString()
+  JWT_SECRET: string;
+
+  @IsString()
   DATABASE_URL: string;
 
   @IsString()

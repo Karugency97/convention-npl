@@ -12,6 +12,7 @@ import { DossiersService } from './dossiers.service';
 import { CreateDossierDto } from './dto/create-dossier.dto';
 import { UpdateDossierDto } from './dto/update-dossier.dto';
 import { DossierStatus } from '@prisma/client';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('dossiers')
 export class DossiersController {
@@ -26,8 +27,12 @@ export class DossiersController {
   findAll(
     @Query('status') status?: DossierStatus,
     @Query('clientId') clientId?: string,
+    @Query() paginationDto?: PaginationDto,
   ) {
-    return this.dossiersService.findAll({ status, clientId });
+    return this.dossiersService.findAllPaginated(paginationDto ?? new PaginationDto(), {
+      status,
+      clientId,
+    });
   }
 
   @Get(':id')

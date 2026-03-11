@@ -6,7 +6,9 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateDossierDto } from './dto/create-dossier.dto';
 import { UpdateDossierDto } from './dto/update-dossier.dto';
-import { DossierStatus } from '@prisma/client';
+import { DossierStatus, Prisma } from '@prisma/client';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
 
 @Injectable()
 export class DossiersService {
@@ -33,6 +35,68 @@ export class DossiersService {
         client: true,
       },
     });
+  }
+
+  async findAllPaginated(
+    paginationDto: PaginationDto,
+    filters?: { status?: DossierStatus; clientId?: string },
+  ): Promise<PaginatedResult<any>> {
+    const { page = 1, limit = 20, search, sortBy, sortOrder = 'desc' } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.DossierWhereInput = {
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.clientId && { clientId: filters.clientId }),
+    };
+
+    if (search) {
+      where.OR = [
+        { reference: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        {
+          client: {
+            firstName: { contains: search, mode: 'insensitive' },
+          },
+        },
+        {
+          client: {
+            lastName: { contains: search, mode: 'insensitive' },
+          },
+        },
+      ];
+    }
+
+    const orderBy: Record<string, string> = {};
+    if (sortBy && ['reference', 'description', 'status', 'createdAt', 'updatedAt'].includes(sortBy)) {
+      orderBy[sortBy] = sortOrder;
+    } else {
+      orderBy.createdAt = sortOrder;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.dossier.findMany({
+        where,
+        include: {
+          client: true,
+          lettreMission: true,
+          paiements: true,
+        },
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      this.prisma.dossier.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findAll(filters?: { status?: DossierStatus; clientId?: string }) {

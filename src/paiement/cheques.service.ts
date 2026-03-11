@@ -5,7 +5,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ChequeStatus } from '@prisma/client';
+import { ChequeStatus, Prisma } from '@prisma/client';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
 
 @Injectable()
 export class ChequesService {
@@ -78,6 +80,94 @@ export class ChequesService {
         `Invalid status transition from ${currentStatus} to ${newStatus}`,
       );
     }
+  }
+
+  async findAllPaginated(
+    paginationDto: PaginationDto,
+    filters?: {
+      paiementId?: string;
+      status?: ChequeStatus;
+      dossierId?: string;
+    },
+  ): Promise<PaginatedResult<any>> {
+    const { page = 1, limit = 20, search } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.ChequeWhereInput = {
+      ...(filters?.paiementId && { paiementId: filters.paiementId }),
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.dossierId && {
+        paiement: { dossierId: filters.dossierId },
+      }),
+    };
+
+    if (search) {
+      const searchNum = parseInt(search, 10);
+      const orConditions: Prisma.ChequeWhereInput[] = [
+        {
+          paiement: {
+            dossier: {
+              client: {
+                firstName: { contains: search, mode: 'insensitive' },
+              },
+            },
+          },
+        },
+        {
+          paiement: {
+            dossier: {
+              client: {
+                lastName: { contains: search, mode: 'insensitive' },
+              },
+            },
+          },
+        },
+        {
+          paiement: {
+            dossier: {
+              reference: { contains: search, mode: 'insensitive' },
+            },
+          },
+        },
+      ];
+
+      if (!isNaN(searchNum)) {
+        orConditions.push({ numero: searchNum });
+      }
+
+      where.OR = orConditions;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.cheque.findMany({
+        where,
+        include: {
+          paiement: {
+            include: {
+              dossier: {
+                include: {
+                  client: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: [{ paiement: { createdAt: 'desc' } }, { numero: 'asc' }],
+        skip,
+        take: limit,
+      }),
+      this.prisma.cheque.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findAll(filters?: {

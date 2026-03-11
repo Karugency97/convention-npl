@@ -3,3 +3,5 @@ export { Input } from './Input';
 export { Card, CardHeader, CardContent, CardFooter } from './Card';
 export { Badge } from './Badge';
 export { Modal } from './Modal';
+export { Pagination } from './Pagination';
+export { SearchBar } from './SearchBar';

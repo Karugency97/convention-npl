@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Plus,
-  Search,
   FolderOpen,
   Filter,
   ArrowUpDown,
@@ -13,8 +12,8 @@ import {
   CreditCard,
   ChevronRight,
 } from 'lucide-react';
-import { Button, Card, Badge, Modal, Input } from '../components/ui';
-import { getDossiers, getClients, createDossier } from '../lib/api';
+import { Button, Card, Badge, Modal, Input, Pagination, SearchBar } from '../components/ui';
+import { getDossiers, getAllClients, createDossier } from '../lib/api';
 import {
   formatDate,
   formatCurrency,
@@ -27,9 +26,9 @@ const statusFilters: { value: DossierStatus | 'ALL'; label: string }[] = [
   { value: 'ALL', label: 'Tous' },
   { value: 'DRAFT', label: 'Brouillons' },
   { value: 'SENT', label: 'En signature' },
-  { value: 'SIGNED', label: 'Signés' },
+  { value: 'SIGNED', label: 'Signes' },
   { value: 'PAYMENT_PENDING', label: 'Paiement en cours' },
-  { value: 'PAID', label: 'Payés' },
+  { value: 'PAID', label: 'Payes' },
 ];
 
 export function Dossiers() {
@@ -40,6 +39,7 @@ export function Dossiers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<DossierStatus | 'ALL'>('ALL');
   const [sortBy, setSortBy] = useState<'date' | 'reference'>('date');
+  const [page, setPage] = useState(1);
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
 
   // Open modal if ?new=1 is in URL
@@ -51,45 +51,49 @@ export function Dossiers() {
     }
   }, [shouldOpenNew, setSearchParams]);
 
-  const { data: dossiers = [], isLoading } = useQuery({
-    queryKey: ['dossiers'],
-    queryFn: () => getDossiers().then((res) => res.data),
+  const { data: paginatedData, isLoading } = useQuery({
+    queryKey: [
+      'dossiers',
+      {
+        page,
+        search: searchQuery,
+        status: statusFilter,
+        clientId: clientFilter,
+        sortBy,
+      },
+    ],
+    queryFn: () =>
+      getDossiers({
+        page,
+        limit: 20,
+        search: searchQuery || undefined,
+        status: statusFilter !== 'ALL' ? statusFilter : undefined,
+        clientId: clientFilter || undefined,
+        sortBy: sortBy === 'reference' ? 'reference' : 'createdAt',
+        sortOrder: sortBy === 'reference' ? 'asc' : 'desc',
+      }).then((res) => res.data),
   });
+
+  const dossiers = paginatedData?.data ?? [];
+  const meta = paginatedData?.meta;
 
   const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => getClients().then((res) => res.data),
+    queryKey: ['clients', 'all'],
+    queryFn: () => getAllClients().then((res) => res.data),
   });
 
-  // Filter and sort
-  let filteredDossiers = dossiers.filter((d) => {
-    const matchesSearch =
-      d.reference.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.client?.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.client?.lastName.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatus = statusFilter === 'ALL' || d.status === statusFilter;
-    const matchesClient = !clientFilter || d.clientId === clientFilter;
-
-    return matchesSearch && matchesStatus && matchesClient;
-  });
-
-  filteredDossiers = [...filteredDossiers].sort((a, b) => {
-    if (sortBy === 'date') {
-      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-    }
-    return a.reference.localeCompare(b.reference);
-  });
-
-  // Stats
-  const stats = {
-    total: dossiers.length,
-    pending: dossiers.filter(
-      (d) => d.status === 'SENT' || d.status === 'PAYMENT_PENDING'
-    ).length,
-    completed: dossiers.filter((d) => d.status === 'PAID').length,
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    setPage(1);
   };
+
+  const handleStatusChange = (newStatus: DossierStatus | 'ALL') => {
+    setStatusFilter(newStatus);
+    setPage(1);
+  };
+
+  // Stats from meta
+  const total = meta?.total ?? 0;
 
   return (
     <motion.div
@@ -101,8 +105,7 @@ export function Dossiers() {
         <div>
           <h1 className={styles.title}>Dossiers</h1>
           <p className={styles.subtitle}>
-            {stats.total} dossier{stats.total !== 1 ? 's' : ''} · {stats.pending} en
-            cours · {stats.completed} complété{stats.completed !== 1 ? 's' : ''}
+            {total} dossier{total !== 1 ? 's' : ''}
           </p>
         </div>
         <Button
@@ -115,16 +118,11 @@ export function Dossiers() {
 
       {/* Filters */}
       <div className={styles.toolbar}>
-        <div className={styles.searchWrapper}>
-          <Search size={18} className={styles.searchIcon} />
-          <input
-            type="text"
-            placeholder="Rechercher un dossier..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-        </div>
+        <SearchBar
+          value={searchQuery}
+          onChange={handleSearchChange}
+          placeholder="Rechercher un dossier..."
+        />
 
         <div className={styles.filters}>
           <div className={styles.filterGroup}>
@@ -132,7 +130,7 @@ export function Dossiers() {
             <select
               value={statusFilter}
               onChange={(e) =>
-                setStatusFilter(e.target.value as DossierStatus | 'ALL')
+                handleStatusChange(e.target.value as DossierStatus | 'ALL')
               }
               className={styles.select}
             >
@@ -146,10 +144,13 @@ export function Dossiers() {
 
           <button
             className={styles.sortButton}
-            onClick={() => setSortBy(sortBy === 'date' ? 'reference' : 'date')}
+            onClick={() => {
+              setSortBy(sortBy === 'date' ? 'reference' : 'date');
+              setPage(1);
+            }}
           >
             <ArrowUpDown size={16} />
-            {sortBy === 'date' ? 'Date' : 'Référence'}
+            {sortBy === 'date' ? 'Date' : 'Reference'}
           </button>
         </div>
       </div>
@@ -157,7 +158,7 @@ export function Dossiers() {
       {/* Dossier List */}
       <div className={styles.dossierList}>
         <AnimatePresence mode="popLayout">
-          {filteredDossiers.map((dossier, index) => (
+          {dossiers.map((dossier, index) => (
             <motion.div
               key={dossier.id}
               layout
@@ -172,21 +173,32 @@ export function Dossiers() {
         </AnimatePresence>
       </div>
 
-      {filteredDossiers.length === 0 && !isLoading && (
+      {dossiers.length === 0 && !isLoading && (
         <div className={styles.emptyState}>
           <FolderOpen size={48} strokeWidth={1} />
-          <h3>Aucun dossier trouvé</h3>
+          <h3>Aucun dossier trouve</h3>
           <p>
             {searchQuery || statusFilter !== 'ALL'
               ? 'Essayez de modifier vos filtres'
-              : 'Créez votre premier dossier pour commencer'}
+              : 'Creez votre premier dossier pour commencer'}
           </p>
           {!searchQuery && statusFilter === 'ALL' && (
             <Button variant="secondary" onClick={() => setIsNewModalOpen(true)}>
-              Créer un dossier
+              Creer un dossier
             </Button>
           )}
         </div>
+      )}
+
+      {/* Pagination */}
+      {meta && (
+        <Pagination
+          page={meta.page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          limit={meta.limit}
+          onPageChange={setPage}
+        />
       )}
 
       {/* New Dossier Modal */}
@@ -246,11 +258,11 @@ function DossierCard({ dossier }: { dossier: Dossier }) {
                 {dossier.client.firstName} {dossier.client.lastName}
               </span>
             )}
-            <span className={styles.separator}>·</span>
+            <span className={styles.separator}>.</span>
             <span className={styles.date}>{formatDate(dossier.createdAt)}</span>
             {dossier.lettreMission && (
               <>
-                <span className={styles.separator}>·</span>
+                <span className={styles.separator}>.</span>
                 <span className={styles.amount}>
                   {formatCurrency(dossier.lettreMission.totalAmount)}
                 </span>
@@ -336,7 +348,7 @@ function NewDossierModal({
             className={styles.formSelect}
             disabled={createMutation.isPending}
           >
-            <option value="">Sélectionner un client...</option>
+            <option value="">Selectionner un client...</option>
             {clients.map((client) => (
               <option key={client.id} value={client.id}>
                 {client.firstName} {client.lastName} - {client.email}
@@ -364,7 +376,7 @@ function NewDossierModal({
             Annuler
           </Button>
           <Button type="submit" isLoading={createMutation.isPending}>
-            Créer le dossier
+            Creer le dossier
           </Button>
         </div>
       </form>

@@ -105,7 +105,7 @@ await this.prisma.$transaction([
 
 Environment validation in `src/config/env.validation.ts` using class-validator. All variables validated at startup.
 
-Required: `DATABASE_URL`, `API_KEY`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, `FRONTEND_URL`
+Required: `DATABASE_URL`, `API_KEY`, `JWT_SECRET`, `S3_*`, `FIRMA_*`, `PAYPLUG_*`, `APP_URL`, `FRONTEND_URL`
 
 ### PDF Generation
 

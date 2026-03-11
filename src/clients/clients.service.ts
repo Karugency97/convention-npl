@@ -7,6 +7,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { Prisma } from '@prisma/client';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginatedResult } from '../common/interfaces/paginated-result.interface';
 
 @Injectable()
 export class ClientsService {
@@ -27,6 +29,50 @@ export class ClientsService {
       }
       throw error;
     }
+  }
+
+  async findAllPaginated(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedResult<any>> {
+    const { page = 1, limit = 20, search, sortBy, sortOrder = 'desc' } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.ClientWhereInput = {};
+
+    if (search) {
+      where.OR = [
+        { firstName: { contains: search, mode: 'insensitive' } },
+        { lastName: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const orderBy: Record<string, string> = {};
+    if (sortBy && ['firstName', 'lastName', 'email', 'createdAt'].includes(sortBy)) {
+      orderBy[sortBy] = sortOrder;
+    } else {
+      orderBy.createdAt = sortOrder;
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.client.findMany({
+        where,
+        orderBy,
+        skip,
+        take: limit,
+      }),
+      this.prisma.client.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findAll() {

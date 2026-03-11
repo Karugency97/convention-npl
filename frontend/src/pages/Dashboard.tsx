@@ -12,7 +12,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { Card, Badge, Button } from '../components/ui';
-import { getDossiers, getClients, getCheques } from '../lib/api';
+import { getDossiers, getCheques, getAllClients } from '../lib/api';
 import {
   formatCurrency,
   formatRelativeTime,
@@ -37,20 +37,22 @@ const itemVariants = {
 };
 
 export function Dashboard() {
-  const { data: dossiers = [] } = useQuery({
-    queryKey: ['dossiers'],
-    queryFn: () => getDossiers().then((res) => res.data),
+  const { data: dossiersData } = useQuery({
+    queryKey: ['dossiers', 'dashboard'],
+    queryFn: () => getDossiers({ limit: 100 }).then((res) => res.data),
   });
+  const dossiers = dossiersData?.data ?? [];
 
   const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    queryFn: () => getClients().then((res) => res.data),
+    queryKey: ['clients', 'all'],
+    queryFn: () => getAllClients().then((res) => res.data),
   });
 
-  const { data: cheques = [] } = useQuery({
-    queryKey: ['cheques'],
-    queryFn: () => getCheques().then((res) => res.data),
+  const { data: chequesData } = useQuery({
+    queryKey: ['cheques', 'dashboard'],
+    queryFn: () => getCheques({ limit: 100 }).then((res) => res.data),
   });
+  const cheques = chequesData?.data ?? [];
 
   // Calculate stats
   const pendingSignatures = dossiers.filter(

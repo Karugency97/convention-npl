@@ -420,10 +420,14 @@ export class SignatureService {
       .update(JSON.stringify(payload))
       .digest('hex');
 
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(computedSignature),
-    );
+    const sigBuffer = Buffer.from(signature);
+    const computedBuffer = Buffer.from(computedSignature);
+
+    if (sigBuffer.length !== computedBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(sigBuffer, computedBuffer);
   }
 
   async getSignatureStatus(dossierId: string) {

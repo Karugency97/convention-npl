@@ -1,0 +1,66 @@
+.wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.icon {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink-400);
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-10) 0 calc(var(--space-4) + 24px);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--ink-800);
+  background: var(--cream);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.input::placeholder {
+  color: var(--ink-300);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--gold-500);
+  box-shadow: 0 0 0 3px rgba(184, 149, 106, 0.15);
+}
+
+.clearButton {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: var(--ink-400);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.clearButton:hover {
+  background: var(--ink-100);
+  color: var(--ink-600);
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    max-width: none;
+  }
+}

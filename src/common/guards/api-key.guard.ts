@@ -8,8 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import * as crypto from 'crypto';
-
-export const IS_PUBLIC_KEY = 'isPublic';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
